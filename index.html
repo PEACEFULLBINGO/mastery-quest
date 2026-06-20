@@ -16,7 +16,11 @@
       height: 100%;
       width: 100%;
       font-family: 'Georgia', serif;
-      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      transition: background-image 1s ease-in-out;
       color: #e8d4b8;
       overflow-x: hidden;
     }
@@ -203,11 +207,6 @@
     }
 
     /* Browse section */
-    @keyframes scaleIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
     .browse-section {
       animation: fadeInUp 0.8s ease-out 0.6s both;
       display: flex;
@@ -245,7 +244,126 @@
       animation: fadeInUp 0.8s ease-out 0.7s both;
     }
 
-    /* Card animations */
+    .wiki-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #ffd700;
+    }
+
+    .wiki-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(26, 31, 58, 0.9);
+      border: 2px solid #ffd700;
+      border-radius: 8px;
+      color: #e8d4b8;
+      font-family: 'Georgia', serif;
+      margin-bottom: 15px;
+    }
+
+    .wiki-input:focus {
+      outline: none;
+      border-color: #dc143c;
+      box-shadow: 0 0 15px rgba(220, 20, 60, 0.5);
+    }
+
+    .wiki-btn {
+      background: linear-gradient(135deg, #dc143c, #ff6347);
+      color: #ffd700;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .wiki-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(220, 20, 60, 0.6);
+    }
+
+    .wiki-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .wiki-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(40, 50, 80, 0.95));
+      border: 3px solid #ffd700;
+      border-radius: 15px;
+      padding: 30px;
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      color: #ffd700;
+      font-size: 2rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .close:hover {
+      color: #dc143c;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .detail-label {
+      font-weight: bold;
+      color: #ffd700;
+      min-width: 80px;
+    }
+
+    .detail-value {
+      color: #e8d4b8;
+      flex: 1;
+    }
+
     @keyframes cardSlideIn {
       from {
         transform: translateY(30px) rotateY(90deg);
@@ -255,11 +373,6 @@
         transform: translateY(0) rotateY(0deg);
         opacity: 1;
       }
-    }
-
-    @keyframes cardHover {
-      0%, 100% { transform: translateY(0) rotateX(0deg); }
-      50% { transform: translateY(-10px) rotateX(5deg); }
     }
 
     .card {
@@ -272,6 +385,7 @@
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(10px);
+      cursor: pointer;
     }
 
     .card:nth-child(1) { animation-delay: 0.1s; }
@@ -321,7 +435,7 @@
     .card-info {
       font-size: 0.95rem;
       line-height: 1.8;
-      color: #e8d4b8;
+      color: #d95f2e;
     }
 
     .card-info p {
@@ -356,12 +470,6 @@
       color: #dc143c;
     }
 
-    /* Empty state animation */
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -372,19 +480,12 @@
       font-size: 2rem;
       color: #ffd700;
       margin-bottom: 20px;
-      animation: bounce 2s ease-in-out infinite;
     }
 
     .empty-state p {
       font-size: 1.1rem;
       color: #e8d4b8;
       margin-bottom: 20px;
-    }
-
-    /* Spinner loading animation */
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     .spinner {
@@ -397,41 +498,21 @@
       margin: 40px auto;
     }
 
-    /* Responsive design */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-        letter-spacing: 1px;
-      }
-
-      .input-section {
-        flex-direction: column;
-      }
-
-      input {
-        min-width: auto;
-        max-width: 100%;
-      }
-
-      button {
-        min-width: 100%;
-      }
-
-      .results {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-
-      .card {
-        padding: 20px;
-      }
-
-      .card-title {
-        font-size: 1.5rem;
-      }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Dark mode torch effect */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; letter-spacing: 1px; }
+      .input-section { flex-direction: column; }
+      input { min-width: auto; max-width: 100%; }
+      button { min-width: 100%; }
+      .results { grid-template-columns: 1fr; gap: 15px; }
+      .card { padding: 20px; }
+      .card-title { font-size: 1.5rem; }
+    }
+
     @keyframes torch {
       0%, 100% { opacity: 0.8; filter: brightness(1); }
       50% { opacity: 1; filter: brightness(1.2); }
@@ -449,7 +530,7 @@
     }
   </style>
 </head>
-<body>
+<body style="background-image: url('https://picsum.photos/1920/1080?random=1');">
 
 <!-- Animated particles -->
 <div class="particle" style="top: 10%; left: 10%; animation-delay: 0s;">🐉</div>
@@ -467,16 +548,16 @@
 
   <!-- Search type selector -->
   <div class="search-type">
-    <button class="type-btn active" onclick="setSearchType('all')">All</button>
-    <button class="type-btn" onclick="setSearchType('character')">Character</button>
-    <button class="type-btn" onclick="setSearchType('house')">House</button>
-    <button class="type-btn" onclick="setSearchType('kingdom')">Kingdom</button>
-    <button class="type-btn" onclick="setSearchType('title')">Title</button>
+    <button class="type-btn active" onclick="setSearchType('all', this)">All</button>
+    <button class="type-btn" onclick="setSearchType('character', this)">Character</button>
+    <button class="type-btn" onclick="setSearchType('house', this)">House</button>
+    <button class="type-btn" onclick="setSearchType('kingdom', this)">Kingdom</button>
+    <button class="type-btn" onclick="setSearchType('title', this)">Title</button>
   </div>
 
   <!-- Search input -->
   <div class="input-section">
-    <input type="text" id="Trackertext" placeholder="Search: Tyrion, House Stark, The North...">
+    <input type="text" id="Trackertext" placeholder="Search: Tyrion, House Stark, The North..." onkeypress="if(event.key==='Enter') addTracker()">
     <button onclick="addTracker()">🔍 Track</button>
   </div>
 
@@ -492,131 +573,140 @@
   <div class="results" id="results"></div>
 </div>
 
+<!-- Modal -->
+<div id="characterModal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalCharacterName"></h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
 <script>
   let currentSearchType = 'all';
-  let currentBatch = null;
+  let wikiUrls = JSON.parse(localStorage.getItem('wikiUrls')) || {};
 
-  // FIXED & COMPLETE Game of Thrones Database - All syntax errors resolved
+ 
+ // Game of Thrones Database
   const database = {
     characters: [
-  // 🔥🏰 ROYAL FAMILY & KINGS (12)
-  {name: 'Robert Baratheon', title: 'King of the Seven Kingdoms', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Rebel king who won throne', details: 'Boar hunting accident'},
-  {name: 'Joffrey Baratheon', title: 'King Joffrey I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sadistic tyrant king', details: 'Poisoned at wedding'},
-  {name: 'Tommen Baratheon', title: 'King Tommen I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Puppet king, gentle boy', details: 'Suicide after Sept explosion'},
-  {name: 'Stannis Baratheon', title: 'Claimant to Iron Throne', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: '', info: 'Burned daughter for power', details: 'Killed by Brienne'},
-  {name: 'Renly Baratheon', title: 'King Renly', house: 'House Baratheon', kingdom: 'Stormlands', status: 'deceased', image: '', info: 'Charismatic claimant', details: 'Shadow assassin by Melisandre'},
-  {name: 'Bran Stark', title: 'King of the Six Kingdoms', house: 'House Stark', kingdom: 'Seven Kingdoms', status: 'alive', image: '', info: 'Three-Eyed Raven, elected king', details: 'Ruler on weirwood throne'},
-  {name: 'Myrcella Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sweet Dornish princess', details: 'Poisoned by Ellaria Sand'},
-  {name: 'Shireen Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: '', info: 'Greyscale scarred girl', details: 'Burned as sacrifice'},
-  {name: 'Gendry', title: 'Lord of Storm\'s End', house: 'House Baratheon', kingdom: 'Stormlands', status: 'alive', image: '', info: 'Robert\'s blacksmith bastard', details: 'Rowed to Braavos'},
+      // ROYAL FAMILY & KINGS (example image added for Robert)
+      {name: 'Robert Baratheon', title: 'King of the Seven Kingdoms', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/d/d8/Robert_Baratheon.jpg/revision/latest?cb=20101128161640', info: 'Rebel king who won throne', details: 'Boar hunting accident'},
+      {name: 'Joffrey Baratheon', title: 'King Joffrey I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/a/ad/Jack-Gleeson-as-Joffrey-Baratheon_photo-Macall-B.-Polay_HBO.jpg/revision/latest/scale-to-width-down/1000?cb=20140130193838', info: 'Sadistic tyrant king', details: 'Poisoned at wedding'},
+      {name: 'Tommen Baratheon', title: 'King Tommen I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/9/94/Tommen_sons_of_the_harpy.jpg/revision/latest?cb=20150504161509', info: 'Puppet king, gentle boy', details: 'Suicide after Sept explosion'},
+      {name: 'Stannis Baratheon', title: 'Claimant to Iron Throne', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/2/2f/StannisNew.png/revision/latest?cb=20210313165449', info: 'Burned daughter for power', details: 'Killed by Brienne'},
+      {name: 'Renly Baratheon', title: 'King Renly', house: 'House Baratheon', kingdom: 'Stormlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/f/ff/Profile-Renly_Baratheon.png/revision/latest?cb=20171006064500', info: 'Charismatic claimant', details: 'Shadow assassin by Melisandre'},
+      {name: 'Bran Stark', title: 'King of the Six Kingdoms', house: 'House Stark', kingdom: 'Seven Kingdoms', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/8/81/KingBran.PNG/revision/latest?cb=20190520173855', info: 'Three-Eyed Raven, elected king', details: 'Ruler on weirwood throne'},
+      {name: 'Myrcella Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/0/02/MyrcellaS5Cropped.jpg/revision/latest/scale-to-width-down/1000?cb=20160802025401', info: 'Sweet Dornish princess', details: 'Poisoned by Ellaria Sand'},
+      {name: 'Shireen Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/e/eb/Shireen_Baratheon_Season_4_profile.jpg/revision/latest?cb=20210722092809', info: 'Greyscale scarred girl', details: 'Burned as sacrifice'},
+      {name: 'Gendry', title: 'Lord of Storm\'s End', house: 'House Baratheon', kingdom: 'Stormlands', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/7/7b/GendryBaratheon.png/revision/latest?cb=20190520221935', info: 'Robert\'s blacksmith bastard', details: 'Rowed to Braavos'},
 
-  // 🔥🐺 HOUSE STARK (8)
-  {name: 'Ned Stark', title: 'Lord of Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Honorable Hand of King', details: 'Beheaded by Joffrey'},
-  {name: 'Catelyn Stark', title: 'Lady of Riverrun', house: 'House Tully', kingdom: 'The North', status: 'deceased', image: '', info: 'Mother turned Lady Stoneheart', details: 'Red Wedding massacre'},
-  {name: 'Robb Stark', title: 'King in the North', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Young wolf king betrayed', details: 'Red Wedding treachery'},
-  {name: 'Sansa Stark', title: 'Queen in the North', house: 'House Stark', kingdom: 'The North', status: 'alive', image: '', info: 'Survived abuse, wise ruler', details: 'Executed Littlefinger'},
-  {name: 'Arya Stark', title: 'No One', house: 'House Stark', kingdom: 'The North', status: 'alive', image: '', info: 'Faceless Men assassin', details: 'Killed Night King, sailed West'},
-  {name: 'Rickon Stark', title: 'Heir to Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Wild youngest Stark', details: 'Killed by Ramsay Bolton'},
-  {name: 'Jon Snow', title: 'King in the North', house: 'House Targaryen', kingdom: 'The North', status: 'alive', image: '', info: 'Secret Targaryen heir', details: 'Exiled beyond the Wall'},
-  {name: 'Benjen Stark', title: 'First Ranger', house: 'House Stark', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Ned\'s brother, Coldhands', details: 'Sacrificed beyond Wall'},
+      // HOUSE STARK
+      {name: 'Ned Stark', title: 'Lord of Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/f/f0/Famtree-EddardStark.png/revision/latest?cb=20170904233618', info: 'Honorable Hand of King', details: 'Beheaded by Joffrey'},
+      {name: 'Catelyn Stark', title: 'Lady of Riverrun', house: 'House Tully', kingdom: 'The North', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/d/d8/CatelynS3Promo.jpg/revision/latest?cb=20190427043743', info: 'Mother turned Lady Stoneheart', details: 'Red Wedding massacre'},
+      {name: 'Robb Stark', title: 'King in the North', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/5/50/S3E9_Robb_Stark_main.jpg/revision/latest?cb=20160718071203', info: 'Young wolf king betrayed', details: 'Red Wedding treachery'},
+      {name: 'Sansa Stark', title: 'Queen in the North', house: 'House Stark', kingdom: 'The North', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/6/63/QueenSansa.PNG/revision/latest?cb=20210215100224', info: 'Survived abuse, wise ruler', details: 'Executed Littlefinger'},
+      {name: 'Arya Stark', title: 'No One', house: 'House Stark', kingdom: 'The North', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/b/be/AryaShipIronThrone.PNG/revision/latest?cb=20190520174300', info: 'Faceless Men assassin', details: 'Killed Night King, sailed West'},
+      {name: 'Rickon Stark', title: 'Heir to Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/d/d9/Battle_of_the_Bastards_42.jpg/revision/latest/scale-to-width-down/1000?cb=20160621185459', info: 'Wild youngest Stark', details: 'Killed by Ramsay Bolton'},
+      {name: 'Jon Snow', title: 'King in the North', house: 'House Targaryen', kingdom: 'The North', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/d/d0/JonSnow8x06.PNG/revision/latest?cb=20190714094440', info: 'Secret Targaryen heir', details: 'Exiled beyond the Wall'},
+      {name: 'Benjen Stark', title: 'First Ranger', house: 'House Stark', kingdom: 'The Wall', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/0/0f/610_Benjen_Promo_Crop.png/revision/latest/scale-to-width-down/1000?cb=20160629183134', info: 'Ned\'s brother, Coldhands', details: 'Sacrificed beyond Wall'},
 
-  // 🔥🦁 HOUSE LANNISTER (12)
-  {name: 'Tywin Lannister', title: 'Lord of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Master strategist patriarch', details: 'Crossbowed by Tyrion'},
-  {name: 'Cersei Lannister', title: 'Queen Regent', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Blew up Great Sept', details: 'Crushed with Jaime'},
-  {name: 'Jaime Lannister', title: 'Kingslayer', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Lost sword hand, redeemed', details: 'Died with Cersei'},
-  {name: 'Tyrion Lannister', title: 'Hand of the King', house: 'House Lannister', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Cleverest man alive', details: 'Survived 3 kings'},
-  {name: 'Kevan Lannister', title: 'Master of War', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Tywin\'s loyal brother', details: 'Poisoned in Red Keep'},
-  {name: 'Lancel Lannister', title: 'Converted Zealot', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Cersei\'s former lover', details: 'Faith Militant death'},
-  {name: 'Tysha', title: 'Tyrion\'s First Wife', house: 'None', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Sold to 50 men myth', details: 'Unknown fate'},
-  {name: 'Joanna Lannister', title: 'Lady of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Tywin\'s wife, Tyrion\'s mother', details: 'Childbirth death'},
+      // HOUSE LANNISTER
+      {name: 'Tywin Lannister', title: 'Lord of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/7/71/Tywin_Lannister_4x08.jpg/revision/latest/scale-to-width-down/1000?cb=20170830015346', info: 'Master strategist patriarch', details: 'Crossbowed by Tyrion'},
+      {name: 'Cersei Lannister', title: 'Queen Regent', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/b/b0/CERSEIBATTLEOFKINGSLANDING.PNG/revision/latest?cb=20190906021534', info: 'Blew up Great Sept', details: 'Crushed with Jaime'},
+      {name: 'Jaime Lannister', title: 'Kingslayer', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/5/51/JaimeLannisterSeason8.PNG/revision/latest?cb=20190207112813', info: 'Lost sword hand, redeemed', details: 'Died with Cersei'},
+      {name: 'Tyrion Lannister', title: 'Hand of the King', house: 'House Lannister', kingdom: 'Westerlands', status: 'alive', image: 'https://static.wikia.nocookie.net/gameofthrones/images/9/95/HandoftheKingTyrionLannister.PNG/revision/latest?cb=20190520175204', info: 'Cleverest man alive', details: 'Survived 3 kings'},
+      {name: 'Kevan Lannister', title: 'Master of War', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/6/6d/Kevan-profile.png/revision/latest?cb=20170421102914', info: 'Tywin\'s loyal brother', details: 'Poisoned in Red Keep'},
+      {name: 'Lancel Lannister', title: 'Converted Zealot', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: 'https://static.wikia.nocookie.net/gameofthrones/images/a/a5/No_One_09.jpg/revision/latest/scale-to-width-down/1000?cb=20170829235034', info: 'Cersei\'s former lover', details: 'Faith Militant death'},
+      {name: 'Tysha', title: 'Tyrion\'s First Wife', house: 'None', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Sold to 50 men myth', details: 'Unknown fate'},
+      {name: 'Joanna Lannister', title: 'Lady of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Tywin\'s wife, Tyrion\'s mother', details: 'Childbirth death'},
 
-  // 🔥🐲 HOUSE TARGARYEN (8)
-  {name: 'Daenerys Targaryen', title: 'Breaker of Chains', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Mad Queen, dragon mother', details: 'Stabbed by Jon Snow'},
-  {name: 'Viserys Targaryen', title: 'Beggar King', house: 'House Targaryen', kingdom: 'Essos', status: 'deceased', image: '', info: 'Cruel exiled brother', details: 'Melted by Drogo\'s gold crown'},
-  {name: 'Rhaegar Targaryen', title: 'Prince of Dragonstone', house: 'House Targaryen', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Jon Snow\'s true father', details: 'Killed by Robert'},
-  {name: 'Aerys II Targaryen', title: 'Mad King', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Wildfire obsessed tyrant', details: 'Killed by Jaime'},
+      // HOUSE TARGARYEN
+      {name: 'Daenerys Targaryen', title: 'Breaker of Chains', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Mad Queen, dragon mother', details: 'Stabbed by Jon Snow'},
+      {name: 'Viserys Targaryen', title: 'Beggar King', house: 'House Targaryen', kingdom: 'Essos', status: 'deceased', image: '', info: 'Cruel exiled brother', details: 'Melted by Drogo\'s gold crown'},
+      {name: 'Rhaegar Targaryen', title: 'Prince of Dragonstone', house: 'House Targaryen', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Jon Snow\'s true father', details: 'Killed by Robert'},
+      {name: 'Aerys II Targaryen', title: 'Mad King', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Wildfire obsessed tyrant', details: 'Killed by Jaime'},
 
-  // 🔥🛡️ KINGSGAURD & ELITE KNIGHTS (18)
-  {name: 'Sandor Clegane', title: 'The Hound', house: 'House Clegane', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Brutal knight fears fire', details: 'Fought Mountain brother'},
-  {name: 'Gregor Clegane', title: 'The Mountain', house: 'House Clegane', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Zombie knight monstrosity', details: 'Skull crushed by Arya'},
-  {name: 'Brienne of Tarth', title: 'Lord Commander Kingsguard', house: 'House Tarth', kingdom: 'The Reach', status: 'alive', image: '', info: 'Maid of Tarth, honorable', details: 'Knights Jaime, kills Stannis'},
-  {name: 'Meryn Trant', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sadistic child beater', details: 'Gouged by Arya in brothel'},
-  {name: 'Boros Blount', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Brutal Joffrey enforcer', details: 'Unknown death'},
-  {name: 'Preston Greenfield', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Loyal Lannister guard', details: 'Battle of Blackwater'},
-  {name: 'Mandon Moore', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Silent mad killer', details: 'Pushed off bridge by Tyrion'},
-  {name: 'Renly\'s Kingsguard', title: 'Rainbow Guard', house: 'Various', kingdom: 'Stormlands', status: 'deceased', image: '', info: 'Colorful knight protectors', details: 'Shadow assassin victims'},
+      // KINGSGUARD & KNIGHTS
+      {name: 'Sandor Clegane', title: 'The Hound', house: 'House Clegane', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Brutal knight fears fire', details: 'Fought Mountain brother'},
+      {name: 'Gregor Clegane', title: 'The Mountain', house: 'House Clegane', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Zombie knight monstrosity', details: 'Skull crushed by Arya'},
+      {name: 'Brienne of Tarth', title: 'Lord Commander Kingsguard', house: 'House Tarth', kingdom: 'The Reach', status: 'alive', image: '', info: 'Maid of Tarth, honorable', details: 'Knights Jaime, kills Stannis'},
+      {name: 'Meryn Trant', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sadistic child beater', details: 'Gouged by Arya in brothel'},
+      {name: 'Boros Blount', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Brutal Joffrey enforcer', details: 'Unknown death'},
+      {name: 'Preston Greenfield', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Loyal Lannister guard', details: 'Battle of Blackwater'},
+      {name: 'Mandon Moore', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Silent mad killer', details: 'Pushed off bridge by Tyrion'},
+      {name: 'Renly\'s Kingsguard', title: 'Rainbow Guard', house: 'Various', kingdom: 'Stormlands', status: 'deceased', image: '', info: 'Colorful knight protectors', details: 'Shadow assassin victims'},
 
-  // 🔥🕵️ SCHEMERS & SPIES (15)
-  {name: 'Petyr Baelish', title: 'Lord of Harrenhal', house: 'House Baelish', kingdom: 'The Vale', status: 'deceased', image: '', info: 'Chaos is a ladder', details: 'Trial by Sansa'},
-  {name: 'Varys', title: 'Master of Whisperers', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'The Spider, knows all', details: 'Beheaded for treason'},
-  {name: 'Olenna Tyrell', title: 'Queen of Thorns', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Poisoned Joffrey', details: 'Poisoned herself defiantly'},
-  {name: 'Margaery Tyrell', title: 'Queen Margaery', house: 'House Tyrell', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Manipulated kings', details: 'Great Sept explosion'},
-  {name: 'Loras Tyrell', title: 'Knight of Flowers', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Renly\'s handsome lover', details: 'Sept explosion'},
+      // SCHEMERS & SPIES
+      {name: 'Petyr Baelish', title: 'Lord of Harrenhal', house: 'House Baelish', kingdom: 'The Vale', status: 'deceased', image: '', info: 'Chaos is a ladder', details: 'Trial by Sansa'},
+      {name: 'Varys', title: 'Master of Whisperers', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'The Spider, knows all', details: 'Beheaded for treason'},
+      {name: 'Olenna Tyrell', title: 'Queen of Thorns', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Poisoned Joffrey', details: 'Poisoned herself defiantly'},
+      {name: 'Margaery Tyrell', title: 'Queen Margaery', house: 'House Tyrell', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Manipulated kings', details: 'Great Sept explosion'},
+      {name: 'Loras Tyrell', title: 'Knight of Flowers', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Renly\'s handsome lover', details: 'Sept explosion'},
 
-  // 🔥⚔️ TRAITORS & VILLAINS (12)
-  {name: 'Roose Bolton', title: 'Lord of Dreadfort', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Leech lover, cold', details: 'Stabbed by Ramsay'},
-  {name: 'Ramsay Bolton', title: 'Lord Bolton', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Bastard torturer psychopath', details: 'Eaten by his own dogs'},
-  {name: 'Walder Frey', title: 'Lord of the Twins', house: 'House Frey', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Red Wedding host', details: 'Throat slit by Arya'},
-  {name: 'Janos Slynt', title: 'Lord of Harrenhal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Gold Cloak butcher', details: 'Hanged by Jon Snow'},
+      // TRAITORS & VILLAINS
+      {name: 'Roose Bolton', title: 'Lord of Dreadfort', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Leech lover, cold', details: 'Stabbed by Ramsay'},
+      {name: 'Ramsay Bolton', title: 'Lord Bolton', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Bastard torturer psychopath', details: 'Eaten by his own dogs'},
+      {name: 'Walder Frey', title: 'Lord of the Twins', house: 'House Frey', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Red Wedding host', details: 'Throat slit by Arya'},
+      {name: 'Janos Slynt', title: 'Lord of Harrenhal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Gold Cloak butcher', details: 'Hanged by Jon Snow'},
 
-  // 🔥🌸 MINOR NOBLE HOUSES (25)
-  {name: 'Edmure Tully', title: 'Lord of Riverrun', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Catelyn\'s timid brother', details: 'Frey captive'},
-  {name: 'Brynden Tully', title: 'Blackfish', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Defiant Tully uncle', details: 'Escaped Riverrun siege'},
-  {name: 'Mace Tyrell', title: 'Lord of Highgarden', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Olenna\'s pompous son', details: 'Sept explosion'},
-  {name: 'Balon Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'deceased', image: '', info: 'Ironborn reaver king', details: 'Pushed off bridge'},
-  {name: 'Euron Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'alive', image: '', info: 'Mad pirate king', details: 'Dragonbinder horn'},
+      // MINOR NOBLES
+      {name: 'Edmure Tully', title: 'Lord of Riverrun', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Catelyn\'s timid brother', details: 'Frey captive'},
+      {name: 'Brynden Tully', title: 'Blackfish', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Defiant Tully uncle', details: 'Escaped Riverrun siege'},
+      {name: 'Mace Tyrell', title: 'Lord of Highgarden', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Olenna\'s pompous son', details: 'Sept explosion'},
+      {name: 'Balon Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'deceased', image: '', info: 'Ironborn reaver king', details: 'Pushed off bridge'},
+      {name: 'Euron Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'alive', image: '', info: 'Mad pirate king', details: 'Dragonbinder horn'},
 
-  // 🔥🐎 ESSOS & DOTHRAKI (15)
-  {name: 'Khal Drogo', title: 'Dothraki Khal', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Daenerys\' sun and stars', details: 'Blood magic death'},
-  {name: 'Jorah Mormont', title: 'Exiled Knight', house: 'House Mormont', kingdom: 'Essos', status: 'deceased', image: '', info: 'Loved Daenerys eternally', details: 'Greyscale vs White Walkers'},
-  {name: 'Missandei', title: 'Daenerys\' Advisor', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Trusted multilingual handmaiden', details: 'Beheaded by Mountain'},
-  {name: 'Daario Naharis', title: 'Second Sons Captain', house: 'None', kingdom: 'Essos', status: 'alive', image: '', info: 'Daenerys\' lover mercenary', details: 'Ruler of Yunkai'},
+      // ESSOS & DOTHRAKI
+      {name: 'Khal Drogo', title: 'Dothraki Khal', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Daenerys\' sun and stars', details: 'Blood magic death'},
+      {name: 'Jorah Mormont', title: 'Exiled Knight', house: 'House Mormont', kingdom: 'Essos', status: 'deceased', image: '', info: 'Loved Daenerys eternally', details: 'Greyscale vs White Walkers'},
+      {name: 'Missandei', title: 'Daenerys\' Advisor', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Trusted multilingual handmaiden', details: 'Beheaded by Mountain'},
+      {name: 'Daario Naharis', title: 'Second Sons Captain', house: 'None', kingdom: 'Essos', status: 'alive', image: '', info: 'Daenerys\' lover mercenary', details: 'Ruler of Yunkai'},
 
-  // 🔥🛡️ NIGHT'S WATCH (18)
-  {name: 'Jeor Mormont', title: 'Lord Commander', house: 'House Mormont', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Old Bear, Jon\'s mentor', details: 'Mutiny at Craster\'s Keep'},
-  {name: 'Samwell Tarly', title: 'Grand Maester', house: 'House Tarly', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Killed first White Walker', details: 'Discovered dragonglass'},
-  {name: 'Davos Seaworth', title: 'Hand of the King', house: 'House Seaworth', kingdom: 'The North', status: 'alive', image: '', info: 'Onion Knight smuggler', details: 'Survived all kings'},
+      // NIGHT'S WATCH
+      {name: 'Jeor Mormont', title: 'Lord Commander', house: 'House Mormont', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Old Bear, Jon\'s mentor', details: 'Mutiny at Craster\'s Keep'},
+      {name: 'Samwell Tarly', title: 'Grand Maester', house: 'House Tarly', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Killed first White Walker', details: 'Discovered dragonglass'},
+      {name: 'Davos Seaworth', title: 'Hand of the King', house: 'House Seaworth', kingdom: 'The North', status: 'alive', image: '', info: 'Onion Knight smuggler', details: 'Survived all kings'},
 
-  // 🔥🌲 WILDLINGS & BEYOND THE WALL (15)
-  {name: 'Ygritte', title: 'Wildling Spearwife', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Jon Snow\'s fiery lover', details: 'Arrow at Whispering Wood'},
-  {name: 'Tormund Giantsbane', title: 'Wildling Leader', house: 'None', kingdom: 'The North', status: 'alive', image: '', info: 'Giant slayer, loves Brienne', details: 'New Gift settler'},
-  {name: 'Mance Rayder', title: 'King Beyond the Wall', house: 'None', kingdom: 'Beyond the Wall', status: 'alive', image: '', info: 'Former Night\'s Watchman', details: 'Burning spared by Jon'},
+      // WILDLINGS & BEYOND THE WALL
+      {name: 'Ygritte', title: 'Wildling Spearwife', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Jon Snow\'s fiery lover', details: 'Arrow at Whispering Wood'},
+      {name: 'Tormund Giantsbane', title: 'Wildling Leader', house: 'None', kingdom: 'The North', status: 'alive', image: '', info: 'Giant slayer, loves Brienne', details: 'New Gift settler'},
+      {name: 'Mance Rayder', title: 'King Beyond the Wall', house: 'None', kingdom: 'Beyond the Wall', status: 'alive', image: '', info: 'Former Night\'s Watchman', details: 'Burning spared by Jon'},
 
-  // 🔥📜 SERVANTS, SQUIRES & LOWBORN (50+)
-  {name: 'Hodor', title: 'Stableboy', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: '\'Hold the door\' hero', details: 'Sacrificed for Bran'},
-  {name: 'Shae', title: 'Tyrion\'s Lover', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Testified against Tyrion', details: 'Strangled in bed'},
-  {name: 'Ros', title: 'Littlefinger\'s Whore', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Snooped for Varys', details: 'Crossbowed by Joffrey'},
-  {name: 'Bronn', title: 'Lord of Highgarden', house: 'None', kingdom: 'The Reach', status: 'alive', image: '', info: 'Sellsword turned lord', details: 'Tyrion\'s best friend'},
-  {name: 'Podrick Payne', title: 'Squire', house: 'House Payne', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Tyrion & Brienne\'s squire', details: 'Survived impossibly'},
-  {name: 'Hot Pie', title: 'Baker Boy', house: 'None', kingdom: 'The Riverlands', status: 'alive', image: '', info: 'Arya\'s fat friend', details: 'Famous wolf bread baker'},
+      // SERVANTS, SQUIRES & LOWBORN
+      {name: 'Hodor', title: 'Stableboy', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: '\'Hold the door\' hero', details: 'Sacrificed for Bran'},
+      {name: 'Shae', title: 'Tyrion\'s Lover', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Testified against Tyrion', details: 'Strangled in bed'},
+      {name: 'Ros', title: 'Littlefinger\'s Whore', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Snooped for Varys', details: 'Crossbowed by Joffrey'},
+      {name: 'Bronn', title: 'Lord of Highgarden', house: 'None', kingdom: 'The Reach', status: 'alive', image: '', info: 'Sellsword turned lord', details: 'Tyrion\'s best friend'},
+      {name: 'Podrick Payne', title: 'Squire', house: 'House Payne', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Tyrion & Brienne\'s squire', details: 'Survived impossibly'},
+      {name: 'Hot Pie', title: 'Baker Boy', house: 'None', kingdom: 'The Riverlands', status: 'alive', image: '', info: 'Arya\'s fat friend', details: 'Famous wolf bread baker'},
 
-  // 🔥⛪ FAITH MILITANT & PRIESTS (10)
-  {name: 'High Sparrow', title: 'High Septon', house: 'Faith Militant', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Fanatical faith leader', details: 'Great Sept explosion'},
-  {name: 'Melisandre', title: 'Red Priestess', house: 'R\'hllor', kingdom: 'Essos', status: 'deceased', image: '', info: 'Lord of Light fanatic', details: 'Suicide after Winterfell'},
+      // FAITH MILITANT & PRIESTS
+      {name: 'High Sparrow', title: 'High Septon', house: 'Faith Militant', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Fanatical faith leader', details: 'Great Sept explosion'},
+      {name: 'Melisandre', title: 'Red Priestess', house: 'R\'hllor', kingdom: 'Essos', status: 'deceased', image: '', info: 'Lord of Light fanatic', details: 'Suicide after Winterfell'},
 
-  // 🔥⚰️ MINOR DEATHS & EXTRAS (60+)
-  {name: 'Polliver', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Took Arya\'s sword', details: 'Throat slit by Arya'},
-  {name: 'Rorge', title: 'Criminal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Arya\'s hated tickler', details: 'Stabbed by Arya'},
-  {name: 'Biter', title: 'Bloody Mummer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Crazy biter beast', details: 'Head smashed by Brienne'},
-  {name: 'Craster', title: 'Wildling Wife-Breeder', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Sacrificed sons to Others', details: 'Killed by mutineers'},
-  {name: 'Karl Tanner', title: 'Night\'s Watch Mutineer', house: 'None', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Craster\'s killer', details: 'Gutted by Jon Snow'},
-  {name: 'Locke', title: 'Bolton Man-at-Arms', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Cut off Bran\'s hand', details: 'Head crushed by Hodor'},
-  {name: 'Oberyn Martell', title: 'Red Viper', house: 'House Martell', kingdom: 'Dorne', status: 'deceased', image: '', info: 'Doran\'s vengeful brother', details: 'Skull crushed by Mountain'},
-  {name: 'The Tickler', title: 'Lannister Torturer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Questioned prisoners', details: 'Stabbed repeatedly by Arya'},
-  {name: 'Ser Dontos', title: 'Jester Knight', house: 'House Hollard', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Saved Sansa from Joffrey', details: 'Poisoned by Littlefinger'},
-  {name: 'Ilyn Payne', title: 'King\'s Justice', house: 'House Payne', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Tongueless executioner', details: 'Battle of Winterfell'},
-  {name: 'Amory Lorch', title: 'Lannister Commander', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Burned infant heir', details: 'Poisoned by Jaqen'},
-  {name: 'Polliver\'s Friend', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Drank Tarbeck wine', details: 'Killed by Arya'},
-  {name: 'Weasel', title: 'Orphan Girl', house: 'None', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Massacred village', details: 'Bloody aftermath survivor'}
-  // TOTAL: 250+ CHARACTERS - PERFECT HIERARCHY FROM KINGS TO PEASANTS!
-],
-
+      // MINOR DEATHS & EXTRAS
+      {name: 'Polliver', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Took Arya\'s sword', details: 'Throat slit by Arya'},
+      {name: 'Rorge', title: 'Criminal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Arya\'s hated tickler', details: 'Stabbed by Arya'},
+      {name: 'Biter', title: 'Bloody Mummer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Crazy biter beast', details: 'Head smashed by Brienne'},
+      {name: 'Craster', title: 'Wildling Wife-Breeder', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Sacrificed sons to Others', details: 'Killed by mutineers'},
+      {name: 'Karl Tanner', title: 'Night\'s Watch Mutineer', house: 'None', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Craster\'s killer', details: 'Gutted by Jon Snow'},
+      {name: 'Locke', title: 'Bolton Man-at-Arms', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Cut off Bran\'s hand', details: 'Head crushed by Hodor'},
+      {name: 'Oberyn Martell', title: 'Red Viper', house: 'House Martell', kingdom: 'Dorne', status: 'deceased', image: '', info: 'Doran\'s vengeful brother', details: 'Skull crushed by Mountain'},
+      {name: 'The Tickler', title: 'Lannister Torturer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Questioned prisoners', details: 'Stabbed repeatedly by Arya'},
+      {name: 'Ser Dontos', title: 'Jester Knight', house: 'House Hollard', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Saved Sansa from Joffrey', details: 'Poisoned by Littlefinger'},
+      {name: 'Ilyn Payne', title: 'King\'s Justice', house: 'House Payne', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Tongueless executioner', details: 'Battle of Winterfell'},
+      {name: 'Amory Lorch', title: 'Lannister Commander', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Burned infant heir', details: 'Poisoned by Jaqen'},
+      {name: 'Polliver\'s Friend', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Drank Tarbeck wine', details: 'Killed by Arya'},
+      {name: 'Weasel', title: 'Orphan Girl', house: 'None', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Massacred village', details: 'Bloody aftermath survivor'}
+     // TOTAL: 250+ CHARACTERS - PERFECT HIERARCHY FROM KINGS TO PEASANTS!
+      ],
 
     houses: [
       {name: 'House Stark', sigil: 'Grey Direwolf', words: 'Winter is Coming', kingdom: 'The North', seat: 'Winterfell', info: 'Ancient house of the North, known for honor and loyalty.'},
       {name: 'House Lannister', sigil: 'Golden Lion', words: 'Hear Me Roar', kingdom: 'The Westerlands', seat: 'Casterly Rock', info: 'Wealthy and powerful house from the Westerlands.'},
       {name: 'House Targaryen', sigil: 'Three-Headed Dragon', words: 'Fire and Blood', kingdom: 'Seven Kingdoms', seat: 'Red Keep', info: 'Former ruling house, masters of dragons.'},
-      {name: 'House Baratheon', sigil: 'Crowned Stag', words: 'Ours is the Fury', kingdom: 'The Stormlands', seat: "Storms End", info: 'Powerful house from the Stormlands.'},
+      {name: 'House Baratheon', sigil: 'Crowned Stag', words: 'Ours is the Fury', kingdom: 'The Stormlands', seat: 'Storms End', info: 'Powerful house from the Stormlands.'},
       {name: 'House Arryn', sigil: 'Falcon and Moon', words: 'As High as Honor', kingdom: 'The Vale of Arryn', seat: 'The Eyrie', info: 'Noble house of the Vale, guardians of the south.'},
       {name: 'House Tyrell', sigil: 'Golden Rose', words: 'Growing Strong', kingdom: 'The Reach', seat: 'Highgarden', info: 'Prosperous house controlling the fertile Reach.'},
       {name: 'House Martell', sigil: 'Spear and Sun', words: 'Unbowed, Unbent, Unbroken', kingdom: 'Dorne', seat: 'Sunspear', info: 'Independent house of Dorne with ancient Rhoynish blood.'},
@@ -629,8 +719,8 @@
       {name: 'The Vale of Arryn', ruler: 'House Arryn', capital: 'The Eyrie', info: 'Mountainous region in the east, known for chivalry.'},
       {name: 'The Riverlands', ruler: 'House Tully', capital: 'Riverrun', info: 'Central kingdom, heart of the Seven Kingdoms.'},
       {name: 'The Reach', ruler: 'House Tyrell', capital: 'Highgarden', info: 'Fertile southern kingdom, most populous region.'},
-      {name: 'The Crownlands', ruler: 'House Targaryen', capital: "Kings Landing", info: 'Seat of royal power, surrounded by kingswood.'},
-      {name: 'The Stormlands', ruler: 'House Baratheon', capital: "Storms End", info: 'Coastal region known for violent storms.'},
+      {name: 'The Crownlands', ruler: 'House Targaryen', capital: 'Kings Landing', info: 'Seat of royal power, surrounded by kingswood.'},
+      {name: 'The Stormlands', ruler: 'House Baratheon', capital: 'Storms End', info: 'Coastal region known for violent storms.'},
       {name: 'Dorne', ruler: 'House Martell', capital: 'Sunspear', info: 'Desert kingdom in the south, independent and passionate.'},
       {name: 'The Iron Islands', ruler: 'House Greyjoy', capital: 'Pyke', info: 'Rocky islands off the western coast, home of the ironborn.'}
     ],
@@ -639,155 +729,183 @@
       {name: 'Battle of the Bastards', year: 298, location: 'The North', victor: 'House Stark', description: 'Jon Snow defeats Ramsay Bolton, reclaiming Winterfell.'},
       {name: 'Battle of Blackwater Bay', year: 299, location: 'The Crownlands', victor: 'House Lannister', description: 'Tyrion Lannister defends Kings Landing with wildfire.'},
       {name: 'Battle of the Five Kings', year: 298, location: 'The Riverlands', victor: 'Multiple', description: 'Major conflict with five claimants to the throne.'},
-      {name: 'Battle of the Trident', year: 282, location: 'The Riverlands', victor: 'Baratheon Rebellion', description: "Roberts rebellion crushes the Targaryen dynasty."},
+      {name: 'Battle of the Trident', year: 282, location: 'The Riverlands', victor: 'Baratheon Rebellion', description: 'Roberts rebellion crushes the Targaryen dynasty.'},
       {name: 'Siege of Kings Landing', year: 305, location: 'The Crownlands', victor: 'Daenerys Targaryen', description: 'Daenerys conquers the capital with dragons and allies.'},
       {name: 'Battle of Winterfell', year: 305, location: 'The North', victor: 'Living vs Dead', description: 'The final battle against the White Walkers and darkness.'}
     ]
   };
 
-  // Set search type
-  function setSearchType(type) {
-    currentSearchType = type;
-    currentBatch = null;
-    document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+  // Background changer
+  const images = [
+    'https://static.wikia.nocookie.net/gameofthrones/images/c/ca/Iron_Throne_Official_Guide.jpg/revision/latest/scale-to-width-down/1000?cb=20220906170837',
+    'https://static.wikia.nocookie.net/gameofthrones/images/1/1a/Ned%27s_execution.jpg/revision/latest/scale-to-width-down/1000?cb=20160730054118', 
+    'https://imgs.search.brave.com/hl8N59D70tvzzPqGqvMMJGPI-UAfllfz505Pcq-S9y0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci8yNjUv/Nzg1L0hELXdhbGxw/YXBlci1nYW1lLW9m/LXRocm9uZXMtZGFl/bmVyeXMtdGFyZ2Fy/eWVuLWZhbnRhc3kt/Z2lybC1kcmFnb24t/Y3JlYXR1cmUtYmxv/bmRlLXRodW1ibmFp/bC5qcGc',
+    'https://picsum.photos/1920/1080?random=4',
+    'https://picsum.photos/1920/1080?random=5'
+  ];
+  let currentIndex = 0;
+  let timeLeft = 5;
+
+  function changeBackground() {
+    document.body.style.backgroundImage = `url(${images[currentIndex]})`;
+    currentIndex = (currentIndex + 1) % images.length;
   }
 
-  // Main search/track function
+  function updateTimer() {
+    timeLeft--;
+    if (timeLeft < 0) {
+      timeLeft = 5;
+      changeBackground();
+    }
+  }
+
+  setInterval(updateTimer, 1000);
+
+  // Search functions
+  function setSearchType(type, btn) {
+    currentSearchType = type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    displayResults([]);
+  }
+
   function addTracker() {
     const query = document.getElementById('Trackertext').value.toLowerCase().trim();
-    const resultsDiv = document.getElementById('results');
-
-    if (!query) {
-      resultsDiv.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-          <h2>🏰 Enter Your Search 🏰</h2>
-          <p>Search for characters, houses, kingdoms, or titles</p>
-        </div>
-      `;
-      return;
-    }
+    if (!query) return;
 
     let results = [];
-
     if (currentSearchType === 'all' || currentSearchType === 'character') {
-      results = results.concat(database.characters.filter(c => 
-        c.name.toLowerCase().includes(query) || 
-        c.title.toLowerCase().includes(query) ||
-        c.house.toLowerCase().includes(query)
+      results = results.concat(database.characters.filter(item => 
+        item.name.toLowerCase().includes(query) ||
+        item.house.toLowerCase().includes(query) ||
+        item.title.toLowerCase().includes(query) ||
+        item.kingdom.toLowerCase().includes(query)
       ));
     }
     if (currentSearchType === 'all' || currentSearchType === 'house') {
-      results = results.concat(database.houses.filter(h => 
-        h.name.toLowerCase().includes(query) || 
-        h.words.toLowerCase().includes(query)
+      results = results.concat(database.houses.filter(item => 
+        item.name.toLowerCase().includes(query)
       ));
     }
-    if (currentSearchType === 'all' || currentSearchType === 'kingdom') {
-      results = results.concat(database.kingdoms.filter(k => 
-        k.name.toLowerCase().includes(query)
-      ));
-    }
-    if (currentSearchType === 'all' || currentSearchType === 'title') {
-      results = results.concat(database.characters.filter(c => 
-        c.title.toLowerCase().includes(query)
-      ));
-    }
-
-    displayResults(results, resultsDiv);
+    displayResults(results);
   }
 
-  // Browse specific batches
-  function browseBatch(batch) {
-    currentBatch = batch;
-    const resultsDiv = document.getElementById('results');
+  function browseBatch(type) {
     let results = [];
-
-    if (batch === 'characters') results = database.characters;
-    else if (batch === 'houses') results = database.houses;
-    else if (batch === 'kingdoms') results = database.kingdoms;
-    else if (batch === 'battles') results = database.battles;
-
-    displayResults(results, resultsDiv);
+    if (type === 'characters') results = database.characters.slice(0, 12);
+    else if (type === 'houses') results = database.houses;
+    else if (type === 'kingdoms') results = database.kingdoms;
+    else if (type === 'battles') results = database.battles;
+    
+    displayResults(results);
   }
 
-  // Display results
-  function displayResults(results, resultsDiv) {
-    if (results.length === 0) {
+  function displayResults(items) {
+    const resultsDiv = document.getElementById('results');
+    if (items.length === 0) {
       resultsDiv.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-          <h2>⚔️ No Results Found ⚔️</h2>
-          <p>Try searching for something else or browse all collections</p>
+        <div class="empty-state">
+          <h2>⚔️ No Results Found</h2>
+          <p>Try searching for "Tyrion", "Stark", or browse all categories above.</p>
         </div>
       `;
       return;
     }
 
-    resultsDiv.innerHTML = results.map((item, index) => {
-      if (item.sigil) {
-        // House card
-        return `
-          <div class="card">
-            <div class="card-title">${item.name}</div>
-            <div class="card-subtitle">"${item.words}"</div>
-            <div class="card-info">
-              <p><strong>Sigil:</strong> ${item.sigil}</p>
-              <p><strong>Kingdom:</strong> ${item.kingdom}</p>
-              <p><strong>Seat:</strong> ${item.seat}</p>
-              <p>${item.info}</p>
-            </div>
+    resultsDiv.innerHTML = items.map((item, index) => {
+      const statusClass = item.status ? item.status : '';
+      return `
+        <div class="card" style="animation-delay: ${0.1 * index}s" onclick="openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+          ${item.image ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:15px; border:2px solid #ffd700;">` : ''}
+          <div class="card-title">${item.name}</div>
+          <div class="card-subtitle">${item.title || item.sigil || item.ruler}</div>
+          <div class="card-info">
+            <p>${item.house || item.kingdom || item.location}</p>
+            <p>${item.info || item.description}</p>
+            ${item.status ? `<span class="status-badge ${statusClass}">${item.status.toUpperCase()}</span>` : ''}
           </div>
-        `;
-      } else if (item.victor) {
-        // Battle card
-        return `
-          <div class="card">
-            <div class="card-title">${item.name}</div>
-            <div class="card-subtitle">Year ${item.year}</div>
-            <div class="card-info">
-              <p><strong>Location:</strong> ${item.location}</p>
-              <p><strong>Victor:</strong> ${item.victor}</p>
-              <p>${item.description}</p>
-            </div>
-          </div>
-        `;
-      } else if (item.capital) {
-        // Kingdom card
-        return `
-          <div class="card">
-            <div class="card-title">${item.name}</div>
-            <div class="card-info">
-              <p><strong>Ruler:</strong> ${item.ruler}</p>
-              <p><strong>Capital:</strong> ${item.capital}</p>
-              <p>${item.info}</p>
-            </div>
-          </div>
-        `;
-      } else {
-        // Character card
-        return `
-          <div class="card">
-            <div class="card-title">${item.name}</div>
-            <div class="card-subtitle">${item.title}</div>
-            <div class="card-info">
-              <p><strong>House:</strong> ${item.house}</p>
-              <p><strong>Kingdom:</strong> ${item.kingdom}</p>
-              <p>${item.info}</p>
-              <span class="status-badge ${item.status}">${item.status.toUpperCase()}</span>
-            </div>
-          </div>
-        `;
-      }
+        </div>
+      `;
     }).join('');
   }
 
-  // Allow Enter key to search
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('Trackertext').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addTracker();
-    });
-  });
-</script>
+  // Modal functions
+  function openModal(item) {
+    const modal = document.getElementById('characterModal');
+    const modalName = document.getElementById('modalCharacterName');
+    const modalBody = document.getElementById('modalBody');
+    
+    modalName.textContent = item.name;
+    modalBody.innerHTML = `
+      ${item.image ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'" style="width:100%; height:250px; object-fit:cover; border-radius:12px; margin-bottom:20px; border:2px solid #ffd700;">` : ''}
+      
+      <div class="detail-row">
+        <span class="detail-label">Title:</span>
+        <span class="detail-value">${item.title || 'N/A'}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">House:</span>
+        <span class="detail-value">${item.house || 'N/A'}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Kingdom:</span>
+        <span class="detail-value">${item.kingdom || item.location || 'N/A'}</span>
+      </div>
+      
+      ${item.status ? `
+      <div class="detail-row">
+        <span class="detail-label">Status:</span>
+        <span class="detail-value">
+          <span class="status-badge ${item.status}">${item.status.toUpperCase()}</span>
+        </span>
+      </div>` : ''}
+      
+      <div class="detail-row">
+        <span class="detail-label">Info:</span>
+        <span class="detail-value">${item.info || item.description || 'N/A'}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Fate:</span>
+        <span class="detail-value">${item.details || 'N/A'}</span>
+      </div>
+      
+      <div class="wiki-section">
+        <input type="text" class="wiki-input" id="wikiUrlInput" placeholder="Enter Wiki URL (optional)" value="${wikiUrls[item.name] || ''}">
+        <button class="wiki-btn" onclick="saveWikiUrl('${item.name}')">Save Wiki URL</button>
+        ${wikiUrls[item.name] ? `<a href="${wikiUrls[item.name]}" target="_blank" class="wiki-link">🌐 Open Wiki</a>` : ''}
+      </div>
+    `;
+    
+    modal.style.display = 'block';
+  }
 
+  function closeModal() {
+    document.getElementById('characterModal').style.display = 'none';
+  }
+
+  function saveWikiUrl(name) {
+    const url = document.getElementById('wikiUrlInput').value.trim();
+    if (url) {
+      wikiUrls[name] = url;
+      localStorage.setItem('wikiUrls', JSON.stringify(wikiUrls));
+      closeModal();
+      setTimeout(() => alert('Wiki URL saved!'), 100);
+    }
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    const modal = document.getElementById('characterModal');
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+
+  // Initialize
+  displayResults([]);
+</script>
 </body>
 </html>
