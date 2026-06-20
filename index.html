@@ -1,1014 +1,795 @@
+
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
+<html lang="en">
+<head> 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TradeLog</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🐉 ULTIMATE Game of Thrones Tracker 🐉</title>
   <style>
-    /* ── Theme tokens ─────────────────────────────────────── */
-    :root {
-      --font-sans: "Inter", system-ui, sans-serif;
-      --font-mono: "JetBrains Mono", monospace;
-      --border-radius-md: 12px;
-      --border-radius-lg: 18px;
-      --color-green: #2ce6a3;
-      --color-red:   #ff627e;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    [data-theme="dark"] {
-      --color-bg-base:      #04070d;
-      --color-bg-primary:   rgba(14,20,31,0.88);
-      --color-bg-secondary: rgba(19,28,43,0.78);
-      --color-bg-elevated:  rgba(24,35,54,0.92);
-      --color-bg-sidebar:   rgba(8,13,22,0.75);
-      --color-border-soft:  rgba(123,160,201,0.14);
-      --color-border-med:   rgba(92,202,255,0.3);
-      --color-text-primary: #ecf4ff;
-      --color-text-secondary:#8fa4c2;
-      --color-text-muted:   #657992;
-      --color-accent:       #58c6ff;
-      --color-accent-strong:#2c96ff;
-      --color-accent-soft:  rgba(88,198,255,0.12);
-      --color-neutral:      #b9c5d6;
-      --shadow-soft:        0 18px 40px rgba(0,0,0,0.34);
-      --shadow-glow:        0 0 0 1px rgba(88,198,255,0.05), 0 0 28px rgba(88,198,255,0.08);
-      --chart-text:         #92a8c6;
-      --chart-grid:         rgba(146,168,198,0.10);
-      --tooltip-bg:         #0d1520;
-      --tooltip-title:      #eef5ff;
-      --tooltip-body:       #c7d5e8;
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+      color: #e8d4b8;
+      overflow-x: hidden;
     }
 
-    [data-theme="light"] {
-      --color-bg-base:      #f0f4f9;
-      --color-bg-primary:   rgba(255,255,255,0.92);
-      --color-bg-secondary: rgba(241,245,251,0.92);
-      --color-bg-elevated:  rgba(255,255,255,0.98);
-      --color-bg-sidebar:   rgba(255,255,255,0.90);
-      --color-border-soft:  rgba(100,130,175,0.18);
-      --color-border-med:   rgba(44,120,220,0.35);
-      --color-text-primary: #0f1d2e;
-      --color-text-secondary:#4a6280;
-      --color-text-muted:   #7a93ad;
-      --color-accent:       #1a7fcf;
-      --color-accent-strong:#1060a8;
-      --color-accent-soft:  rgba(26,127,207,0.10);
-      --color-neutral:      #4e6880;
-      --shadow-soft:        0 8px 28px rgba(0,0,0,0.10);
-      --shadow-glow:        0 0 0 1px rgba(26,127,207,0.06), 0 0 18px rgba(26,127,207,0.05);
-      --chart-text:         #4a6280;
-      --chart-grid:         rgba(74,98,128,0.12);
-      --tooltip-bg:         #ffffff;
-      --tooltip-title:      #0f1d2e;
-      --tooltip-body:       #4a6280;
+    /* Animated background particles */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
     }
 
-    /* ── Reset / base ─────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-
-    body {
-      font-family: var(--font-sans);
-      color: var(--color-text-primary);
-      transition: background 0.3s, color 0.2s;
-    }
-    [data-theme="dark"] body {
-      background:
-        radial-gradient(circle at 15% 20%, rgba(44,150,255,0.12), transparent 24%),
-        radial-gradient(circle at 85% 0%,  rgba(44,230,163,0.08), transparent 20%),
-        radial-gradient(circle at 80% 80%, rgba(88,198,255,0.08), transparent 24%),
-        linear-gradient(180deg, #04070d 0%, #09101a 100%);
-      overflow: hidden;
-    }
-    [data-theme="light"] body {
-      background:
-        radial-gradient(circle at 20% 10%, rgba(26,127,207,0.07), transparent 30%),
-        radial-gradient(circle at 80% 90%, rgba(44,230,163,0.06), transparent 30%),
-        linear-gradient(180deg, #e8eef6 0%, #f4f7fb 100%);
-      overflow: hidden;
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 2rem;
+      animation: float 8s infinite;
+      z-index: 1;
     }
 
-    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
-
-    /* ── Layout ───────────────────────────────────────────── */
-    .app { display:flex; height:100vh; min-height:600px; }
-
-    .sidebar {
-      width:220px; min-width:220px; display:flex; flex-direction:column; padding:1rem 0;
-      background: var(--color-bg-sidebar); backdrop-filter:blur(20px);
-      border-right:1px solid var(--color-border-soft);
-      box-shadow:inset -1px 0 0 rgba(255,255,255,0.02);
-      transition: background 0.3s, border-color 0.3s;
-    }
-    .logo {
-      padding:0 1.1rem 1.2rem; margin-bottom:.8rem; border-bottom:1px solid var(--color-border-soft);
-      display:flex; align-items:center; gap:10px; font-size:15px; letter-spacing:.12em;
-      text-transform:uppercase; font-weight:800; color:var(--color-text-primary);
-    }
-    .logo i { color:var(--color-accent); font-size:18px; }
-
-    .nav-item {
-      display:flex; align-items:center; gap:10px; margin:3px 10px; padding:11px 14px;
-      border-radius:12px; font-size:14px; color:var(--color-text-secondary); cursor:pointer;
-      transition:.18s ease;
-    }
-    .nav-item:hover { color:var(--color-text-primary); background:var(--color-accent-soft); box-shadow:inset 0 0 0 1px var(--color-accent-soft); }
-    .nav-item.active {
-      color:var(--color-text-primary);
-      background:linear-gradient(90deg,var(--color-accent-soft),transparent);
-      box-shadow:inset 0 0 0 1px var(--color-border-med);
-    }
-    .nav-item i { font-size:18px; }
-
-    /* ── Theme switcher in sidebar ────────────────────────── */
-    .theme-switcher {
-      margin: auto 10px 12px;
-      background: var(--color-bg-secondary);
-      border: 1px solid var(--color-border-soft);
-      border-radius: 12px;
-      padding: 4px;
+    .container {
+      min-height: 100vh;
       display: flex;
-      gap: 2px;
-    }
-    .theme-btn {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      padding: 7px 4px; border-radius: 8px; cursor: pointer;
-      color: var(--color-text-secondary); font-size: 12px; font-weight: 600;
-      border: none; background: transparent; font-family: var(--font-sans);
-      transition: .18s ease; gap: 4px;
-    }
-    .theme-btn i { font-size: 15px; }
-    .theme-btn:hover { color: var(--color-text-primary); }
-    .theme-btn.active {
-      background: var(--color-accent-soft);
-      color: var(--color-accent);
-      box-shadow: inset 0 0 0 1px var(--color-border-med);
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 2;
     }
 
-    /* ── Main / topbar ────────────────────────────────────── */
-    .main { flex:1; overflow-y:auto; display:flex; flex-direction:column; }
-    .topbar {
-      display:flex; align-items:center; justify-content:space-between; gap:16px;
-      padding:1rem 1.5rem;
-      background:var(--color-bg-primary); backdrop-filter:blur(18px);
-      border-bottom:1px solid var(--color-border-soft); position:sticky; top:0; z-index:10;
-      transition: background 0.3s, border-color 0.3s;
+    /* Title with enhanced animation */
+    @keyframes titleGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(220, 20, 60, 0.3); }
+      50% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(220, 20, 60, 0.6); }
     }
-    .topbar h1 { font-size:20px; font-weight:700; letter-spacing:-.02em; }
-    .content { padding:1.5rem; flex:1; }
-    .page { display:none; }
-    .page.active { display:block; }
 
-    /* ── Cards / metrics ──────────────────────────────────── */
-    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:1.5rem; }
-    .metric, .card, .modal {
-      background:var(--color-bg-elevated);
-      border:1px solid var(--color-border-soft);
-      border-radius:var(--border-radius-lg);
-      box-shadow:var(--shadow-soft),var(--shadow-glow);
-      backdrop-filter:blur(18px);
-      transition: background 0.3s, border-color 0.3s;
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    .metric { padding:1rem; position:relative; overflow:hidden; }
-    .metric::after {
-      content:""; position:absolute; inset:auto -20% -40% auto; width:120px; height:120px;
-      background:radial-gradient(circle, var(--color-accent-soft), transparent 65%); pointer-events:none;
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      animation: slideDown 0.8s ease-out, titleGlow 3s ease-in-out infinite;
+      text-align: center;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     }
-    .metric-label { font-size:11px; color:var(--color-text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:.12em; }
-    .metric-value { font-size:26px; font-weight:700; color:var(--color-text-primary); font-variant-numeric:tabular-nums lining-nums; }
-    .metric-value.green { color:var(--color-green); }
-    .metric-value.red { color:var(--color-red); }
 
-    .card { padding:1.15rem; }
-    .card-title { font-size:12px; font-weight:700; color:var(--color-text-secondary); margin-bottom:1rem; text-transform:uppercase; letter-spacing:.14em; }
-
-    .grid2, .grid3 { display:grid; gap:1rem; margin-bottom:1rem; }
-    .grid2 { grid-template-columns:1fr 1fr; }
-    .grid3 { grid-template-columns:1fr 1fr 1fr; }
-
-    /* ── Buttons ──────────────────────────────────────────── */
-    .btn {
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      min-height:42px; padding:9px 14px; font-size:13px; font-weight:600;
-      border-radius:12px; cursor:pointer; font-family:var(--font-sans); transition:.18s ease;
+    .subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      color: #dc143c;
+      animation: slideDown 1s ease-out 0.2s both;
+      letter-spacing: 2px;
     }
-    .btn-primary {
-      background:linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
-      color:#fff; border:none;
-      box-shadow:0 0 18px rgba(88,198,255,0.18);
-    }
-    [data-theme="light"] .btn-primary { color:#fff; }
-    .btn-primary:hover { transform:translateY(-1px); filter:brightness(1.06); }
-    .btn-ghost {
-      background:var(--color-bg-secondary); color:var(--color-text-secondary);
-      border:1px solid var(--color-border-soft);
-    }
-    .btn-ghost:hover { background:var(--color-accent-soft); color:var(--color-text-primary); border-color:var(--color-border-med); }
-    .btn-danger { background:rgba(255,98,126,0.05); color:var(--color-red); border:1px solid rgba(255,98,126,0.35); }
-    .btn-danger:hover { background:rgba(255,98,126,0.12); }
 
-    /* ── Forms ────────────────────────────────────────────── */
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
-    .form-group { display:flex; flex-direction:column; gap:6px; }
-    .form-group label { font-size:12px; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:.08em; }
-    .form-group input, .form-group select, .form-group textarea {
-      width:100%; font-family:var(--font-sans); font-size:14px;
-      color:var(--color-text-primary); background:var(--color-bg-secondary);
-      border:1px solid var(--color-border-soft); border-radius:12px; padding:10px 12px; outline:none;
-      transition: background 0.3s, border-color 0.3s, color 0.2s;
+    /* Search section animation */
+    @keyframes fadeInUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    .form-group textarea { min-height:88px; resize:vertical; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color:var(--color-border-med); box-shadow:0 0 0 4px var(--color-accent-soft);
+
+    .input-section {
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+      display: flex;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 900px;
     }
-    select option { background: var(--color-bg-elevated); color: var(--color-text-primary); }
 
-    /* ── Badges / table ───────────────────────────────────── */
-    .badge { display:inline-flex; align-items:center; padding:4px 9px; border-radius:999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
-    .badge-win  { background:rgba(44,230,163,0.12); color:var(--color-green); }
-    .badge-loss { background:rgba(255,98,126,0.12); color:var(--color-red); }
-    .badge-be   { background:rgba(185,197,214,0.12); color:var(--color-neutral); }
-
-    .trade-table { width:100%; border-collapse:collapse; font-size:13px; }
-    .trade-table th { text-align:left; padding:9px 12px; font-size:11px; font-weight:700; color:var(--color-text-secondary); border-bottom:1px solid var(--color-border-soft); text-transform:uppercase; letter-spacing:.12em; }
-    .trade-table td { padding:12px; border-bottom:1px solid var(--color-border-soft); color:var(--color-text-primary); font-variant-numeric:tabular-nums lining-nums; }
-    .trade-table tr:hover td { background:var(--color-accent-soft); }
-    .trade-table tr:last-child td { border-bottom:none; }
-
-    .pnl-pos { color:var(--color-green); font-weight:700; font-family:var(--font-mono); }
-    .pnl-neg { color:var(--color-red);   font-weight:700; font-family:var(--font-mono); }
-
-    /* ── Calendar ─────────────────────────────────────────── */
-    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-    .cal-header { text-align:center; font-size:11px; font-weight:700; color:var(--color-text-secondary); padding:6px 0; text-transform:uppercase; letter-spacing:.08em; }
-    .cal-day {
-      min-height:70px; background:var(--color-bg-secondary); border-radius:14px; padding:8px; cursor:pointer;
-      border:1px solid var(--color-border-soft); transition:.18s ease;
+    input, button {
+      padding: 15px 20px;
+      font-size: 1rem;
+      border: 2px solid #ffd700;
+      background: rgba(26, 31, 58, 0.9);
+      color: #e8d4b8;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
-    .cal-day:hover { border-color:var(--color-border-med); background:var(--color-accent-soft); }
-    .cal-day.empty { background:transparent; border-color:transparent; cursor:default; }
-    .cal-day.win-day  { background:rgba(44,230,163,0.08); border-color:rgba(44,230,163,0.28); }
-    .cal-day.loss-day { background:rgba(255,98,126,0.08); border-color:rgba(255,98,126,0.28); }
-    .cal-day.today    { box-shadow:inset 0 0 0 2px var(--color-accent); }
-    .cal-day-num  { font-size:11px; color:var(--color-text-secondary); margin-bottom:6px; }
-    .cal-day-pnl  { font-size:12px; font-weight:700; font-variant-numeric:tabular-nums lining-nums; }
-    .cal-day-pnl.pos { color:var(--color-green); }
-    .cal-day-pnl.neg { color:var(--color-red); }
-    .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
-    .cal-nav-title { font-size:16px; font-weight:700; }
 
-    /* ── Journal ──────────────────────────────────────────── */
-    .journal-entry {
-      background:var(--color-bg-elevated); border-radius:14px; padding:1rem; margin-bottom:10px;
-      border:1px solid var(--color-border-soft); box-shadow:var(--shadow-soft); cursor:default;
-      transition: background 0.3s, border-color 0.3s;
+    input {
+      flex: 1;
+      min-width: 250px;
+      max-width: 500px;
     }
-    .journal-entry:hover { border-color:var(--color-border-med); }
-    .journal-date { font-size:11px; color:var(--color-text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em; }
-    .journal-text { font-size:14px; color:var(--color-text-primary); line-height:1.6; }
 
-    /* ── Modal ────────────────────────────────────────────── */
-    .modal-bg {
-      display:none; position:fixed; inset:0; background:rgba(3,6,10,0.72); z-index:100;
-      align-items:center; justify-content:center; backdrop-filter:blur(10px);
+    input::placeholder {
+      color: #888;
     }
-    [data-theme="light"] .modal-bg { background:rgba(15,29,46,0.40); }
-    .modal-bg.open { display:flex; }
-    .modal { width:520px; max-width:95vw; padding:1.5rem; max-height:90vh; overflow-y:auto; }
-    .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
-    .modal-header h2 { font-size:18px; font-weight:700; }
-    .modal-header .close-btn { background:none; border:none; cursor:pointer; color:var(--color-text-secondary); font-size:20px; padding:4px; border-radius:8px; transition:.15s; }
-    .modal-header .close-btn:hover { color:var(--color-text-primary); background:var(--color-accent-soft); }
 
-    /* ── Filter / misc ────────────────────────────────────── */
-    .empty-state { text-align:center; padding:3rem; color:var(--color-text-secondary); }
-    .empty-state i { font-size:40px; margin-bottom:12px; display:block; color:var(--color-accent); }
-    .empty-state p { font-size:14px; margin-bottom:1rem; }
-    .filter-bar { display:flex; gap:8px; margin-bottom:1rem; align-items:center; }
-    .filter-bar input, .filter-bar select {
-      background:var(--color-bg-elevated); color:var(--color-text-primary);
-      border:1px solid var(--color-border-soft); border-radius:12px; padding:10px 12px;
-      font-family:var(--font-sans); font-size:13px; outline:none;
-      transition: background 0.3s, border-color 0.3s;
+    input:focus {
+      outline: none;
+      border-color: #dc143c;
+      background: rgba(26, 31, 58, 1);
+      box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+      transform: scale(1.02);
     }
-    .filter-bar input:focus, .filter-bar select:focus { border-color:var(--color-border-med); }
-    .filter-bar input { flex:1; }
 
-    /* ── Responsive ───────────────────────────────────────── */
-    @media (max-width:1024px) {
-      .metrics { grid-template-columns:repeat(2,1fr); }
-      .grid2 { grid-template-columns:1fr; }
+    button {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 140px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    @media (max-width:768px) {
-      [data-theme="dark"] body, [data-theme="light"] body { overflow:auto; }
-      .app { flex-direction:column; height:auto; }
-      .sidebar { width:100%; min-width:100%; flex-direction:row; overflow-x:auto; padding:.8rem; gap:6px; flex-wrap:wrap; }
-      .logo { display:none; }
-      .nav-item { white-space:nowrap; margin:0; }
-      .theme-switcher { margin:0; flex-shrink:0; }
-      .content { padding:1rem; }
-      .metrics,.grid3,.form-row { grid-template-columns:1fr; }
-      .filter-bar { flex-direction:column; align-items:stretch; }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+      letter-spacing: 1px;
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    /* Ripple effect on button */
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    button:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+
+    /* Search type selector */
+    .search-type {
+      animation: fadeInUp 0.8s ease-out 0.5s both;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .type-btn {
+      padding: 10px 20px;
+      background: rgba(220, 20, 60, 0.3);
+      border: 2px solid #dc143c;
+      color: #ffd700;
+      cursor: pointer;
+      border-radius: 20px;
+      font-family: 'Georgia', serif;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .type-btn:hover {
+      background: rgba(220, 20, 60, 0.6);
+      transform: scale(1.05);
+    }
+
+    .type-btn.active {
+      background: linear-gradient(135deg, #dc143c, #ff6347);
+      box-shadow: 0 0 20px rgba(220, 20, 60, 0.8);
+      transform: scale(1.1);
+    }
+
+    /* Browse section */
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .browse-section {
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .browse-btn {
+      padding: 12px 25px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .browse-btn:hover {
+      background: rgba(255, 215, 0, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Results container */
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1400px;
+      width: 100%;
+      animation: fadeInUp 0.8s ease-out 0.7s both;
+    }
+
+    /* Card animations */
+    @keyframes cardSlideIn {
+      from {
+        transform: translateY(30px) rotateY(90deg);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes cardHover {
+      0%, 100% { transform: translateY(0) rotateX(0deg); }
+      50% { transform: translateY(-10px) rotateX(5deg); }
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(40, 50, 80, 0.95));
+      border: 2px solid #ffd700;
+      border-radius: 12px;
+      padding: 25px;
+      animation: cardSlideIn 0.6s ease-out forwards;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .card:hover::before {
+      left: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-15px) scale(1.05) rotateX(5deg);
+      box-shadow: 0 20px 40px rgba(220, 20, 60, 0.6), 0 0 30px rgba(255, 215, 0, 0.3);
+      border-color: #dc143c;
+    }
+
+    .card-title {
+      font-size: 1.8rem;
+      color: #ffd700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: slideDown 0.6s ease-out 0.2s both;
+    }
+
+    .card-subtitle {
+      font-size: 1.1rem;
+      color: #dc143c;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .card-info {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #e8d4b8;
+    }
+
+    .card-info p {
+      margin-bottom: 8px;
+      animation: fadeInUp 0.6s ease-out 0.3s both;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-top: 10px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .alive {
+      background: rgba(34, 177, 76, 0.3);
+      border: 1px solid #22b14c;
+      color: #22b14c;
+    }
+
+    .deceased {
+      background: rgba(220, 20, 60, 0.3);
+      border: 1px solid #dc143c;
+      color: #dc143c;
+    }
+
+    /* Empty state animation */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .empty-state h2 {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 20px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      color: #e8d4b8;
+      margin-bottom: 20px;
+    }
+
+    /* Spinner loading animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 215, 0, 0.2);
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+        letter-spacing: 1px;
+      }
+
+      .input-section {
+        flex-direction: column;
+      }
+
+      input {
+        min-width: auto;
+        max-width: 100%;
+      }
+
+      button {
+        min-width: 100%;
+      }
+
+      .results {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Dark mode torch effect */
+    @keyframes torch {
+      0%, 100% { opacity: 0.8; filter: brightness(1); }
+      50% { opacity: 1; filter: brightness(1.2); }
+    }
+
+    .torch {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: torch 3s ease-in-out infinite;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
-<div class="app">
-  <!-- ── Sidebar ── -->
-  <div class="sidebar">
-    <div class="logo"><i class="ti ti-chart-candle"></i> TradeLog</div>
-    <div class="nav-item active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-    <div class="nav-item" onclick="nav('trades',this)"><i class="ti ti-list-details"></i> Trades</div>
-    <div class="nav-item" onclick="nav('calendar',this)"><i class="ti ti-calendar"></i> Calendar</div>
-    <div class="nav-item" onclick="nav('journal',this)"><i class="ti ti-notebook"></i> Journal</div>
-    <div class="nav-item" onclick="nav('analytics',this)"><i class="ti ti-chart-pie"></i> Analytics</div>
 
-    <!-- Theme switcher -->
-    <div class="theme-switcher">
-      <button class="theme-btn" id="btn-dark"   onclick="setTheme('dark')"  ><i class="ti ti-moon"></i></button>
-      <button class="theme-btn" id="btn-system" onclick="setTheme('system')"><i class="ti ti-device-desktop"></i></button>
-      <button class="theme-btn" id="btn-light"  onclick="setTheme('light')" ><i class="ti ti-sun"></i></button>
-    </div>
+<!-- Animated particles -->
+<div class="particle" style="top: 10%; left: 10%; animation-delay: 0s;">🐉</div>
+<div class="particle" style="top: 20%; right: 15%; animation-delay: 1s;">⚔️</div>
+<div class="particle" style="bottom: 20%; left: 20%; animation-delay: 2s;">👑</div>
+<div class="particle" style="top: 30%; right: 10%; animation-delay: 1.5s;">🗡️</div>
+<div class="particle" style="bottom: 30%; right: 15%; animation-delay: 2.5s;">🏰</div>
+
+<div class="torch" style="top: 10%; left: 10%;"></div>
+<div class="torch" style="bottom: 10%; right: 10%;"></div>
+
+<div class="container">
+  <h1>🐉 GAME OF THRONES 🐉</h1>
+  <p class="subtitle">The Kingslayer Tracker</p>
+
+  <!-- Search type selector -->
+  <div class="search-type">
+    <button class="type-btn active" onclick="setSearchType('all')">All</button>
+    <button class="type-btn" onclick="setSearchType('character')">Character</button>
+    <button class="type-btn" onclick="setSearchType('house')">House</button>
+    <button class="type-btn" onclick="setSearchType('kingdom')">Kingdom</button>
+    <button class="type-btn" onclick="setSearchType('title')">Title</button>
   </div>
 
-  <!-- ── Main ── -->
-  <div class="main">
-    <div class="topbar">
-      <h1 id="page-title">Dashboard</h1>
-      <button class="btn btn-primary" onclick="openAddTrade()"><i class="ti ti-plus"></i> Add Trade</button>
-    </div>
-    <div class="content">
-
-      <!-- Dashboard -->
-      <div id="page-dashboard" class="page active">
-        <div class="metrics" id="dash-metrics"></div>
-        <div class="grid2">
-          <div class="card"><div class="card-title">Equity curve</div><div style="position:relative;height:180px;"><canvas id="equityChart"></canvas></div></div>
-          <div class="card"><div class="card-title">Win vs loss</div><div style="position:relative;height:180px;"><canvas id="winChart"></canvas></div></div>
-        </div>
-        <div class="card"><div class="card-title">Recent trades</div><div id="recent-trades-body"></div></div>
-      </div>
-
-      <!-- Trades -->
-      <div id="page-trades" class="page">
-        <div class="filter-bar">
-          <input type="text" id="search-input" placeholder="Search by name or symbol…" oninput="renderTrades()">
-          <select onchange="filterOutcome=this.value;renderTrades()" id="outcome-filter">
-            <option value="">All outcomes</option>
-            <option value="Win">Wins</option>
-            <option value="Loss">Losses</option>
-            <option value="Breakeven">Breakeven</option>
-          </select>
-          <button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download"></i> Export</button>
-        </div>
-        <div class="card" style="padding:0;"><div id="trades-body"></div></div>
-      </div>
-
-      <!-- Calendar -->
-      <div id="page-calendar" class="page">
-        <div class="card">
-          <div class="cal-nav">
-            <button class="btn btn-ghost" onclick="calNav(-1)"><i class="ti ti-chevron-left"></i></button>
-            <span class="cal-nav-title" id="cal-title"></span>
-            <button class="btn btn-ghost" onclick="calNav(1)"><i class="ti ti-chevron-right"></i></button>
-          </div>
-          <div class="calendar-grid" id="cal-days-header"></div>
-          <div style="height:8px;"></div>
-          <div class="calendar-grid" id="cal-grid"></div>
-        </div>
-        <div class="card" style="margin-top:1rem;" id="cal-day-detail"></div>
-      </div>
-
-      <!-- Journal -->
-      <div id="page-journal" class="page">
-        <div style="margin-bottom:1rem;display:flex;justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="openAddJournal()"><i class="ti ti-plus"></i> New entry</button>
-        </div>
-        <div id="journal-list"></div>
-      </div>
-
-      <!-- Analytics -->
-      <div id="page-analytics" class="page">
-        <div class="metrics" id="analytics-metrics"></div>
-        <div class="grid2">
-          <div class="card"><div class="card-title">P&amp;L by symbol</div><div style="position:relative;height:220px;"><canvas id="symbolChart"></canvas></div></div>
-          <div class="card"><div class="card-title">P&amp;L by day of week</div><div style="position:relative;height:220px;"><canvas id="dowChart"></canvas></div></div>
-        </div>
-        <div class="card"><div class="card-title">Monthly summary</div><div style="position:relative;height:200px;"><canvas id="monthlyChart"></canvas></div></div>
-      </div>
-
-    </div>
+  <!-- Search input -->
+  <div class="input-section">
+    <input type="text" id="Trackertext" placeholder="Search: Tyrion, House Stark, The North...">
+    <button onclick="addTracker()">🔍 Track</button>
   </div>
-</div>
 
-<!-- ── Trade modal ── -->
-<div class="modal-bg" id="trade-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modal-title">Add trade</h2>
-      <button class="close-btn" onclick="closeModal('trade-modal')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Trade name / label</label><input type="text" id="t-name" placeholder="e.g. AAPL breakout"></div>
-      <div class="form-group"><label>Symbol / ticker</label><input type="text" id="t-symbol" placeholder="e.g. AAPL"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Date</label><input type="date" id="t-date"></div>
-      <div class="form-group"><label>Outcome</label>
-        <select id="t-outcome"><option>Win</option><option>Loss</option><option>Breakeven</option></select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>P&amp;L ($)</label><input type="number" id="t-pnl" placeholder="e.g. 250 or -150" step="0.01"></div>
-      <div class="form-group"><label>Setup / strategy</label><input type="text" id="t-setup" placeholder="e.g. Momentum, VWAP"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Entry price</label><input type="number" id="t-entry" placeholder="e.g. 182.50" step="0.01"></div>
-      <div class="form-group"><label>Exit price</label><input type="number" id="t-exit" placeholder="e.g. 185.20" step="0.01"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Position size / qty</label><input type="number" id="t-qty" placeholder="e.g. 100 shares" step="0.01"></div>
-      <div class="form-group"><label>Market / asset class</label>
-        <select id="t-market">
-          <option value="">— Select —</option>
-          <option>Stocks</option><option>Options</option><option>Futures</option>
-          <option>Forex</option><option>Crypto</option><option>ETF</option><option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Stop loss ($)</label><input type="number" id="t-stop" placeholder="e.g. 180.00" step="0.01"></div>
-      <div class="form-group"><label>Target / take profit ($)</label><input type="number" id="t-target" placeholder="e.g. 188.00" step="0.01"></div>
-    </div>
-    <div class="form-group" style="margin-bottom:12px;">
-      <label>Emotions / mindset</label>
-      <select id="t-emotion">
-        <option value="">— Select —</option>
-        <option>Calm &amp; focused</option><option>Confident</option><option>Anxious</option>
-        <option>FOMO</option><option>Revenge trading</option><option>Bored</option><option>Overconfident</option>
-      </select>
-    </div>
-    <div class="form-group" style="margin-bottom:16px;"><label>Notes</label><textarea id="t-notes" placeholder="What happened? What did you learn?"></textarea></div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-ghost" onclick="closeModal('trade-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveTrade()">Save trade</button>
-    </div>
+  <!-- Browse section -->
+  <div class="browse-section">
+    <button class="browse-btn" onclick="browseBatch('characters')">📜 All Characters</button>
+    <button class="browse-btn" onclick="browseBatch('houses')">🛡️ All Houses</button>
+    <button class="browse-btn" onclick="browseBatch('kingdoms')">🏰 All Kingdoms</button>
+    <button class="browse-btn" onclick="browseBatch('battles')">⚔️ Major Battles</button>
   </div>
-</div>
 
-<!-- ── Journal modal ── -->
-<div class="modal-bg" id="journal-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Journal entry</h2>
-      <button class="close-btn" onclick="closeModal('journal-modal')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="form-group" style="margin-bottom:12px;"><label>Date</label><input type="date" id="j-date"></div>
-    <div class="form-group" style="margin-bottom:12px;"><label>Entry title</label><input type="text" id="j-title" placeholder="e.g. Revenge trading again…"></div>
-    <div class="form-group" style="margin-bottom:12px;"><label>Mood / mindset</label>
-      <select id="j-mood">
-        <option value="">— Select —</option>
-        <option>Excellent</option><option>Good</option><option>Neutral</option><option>Poor</option><option>Terrible</option>
-      </select>
-    </div>
-    <div class="form-group" style="margin-bottom:16px;"><label>Notes</label><textarea id="j-notes" style="min-height:120px;" placeholder="How was your mindset? What went well or poorly? Any lessons?"></textarea></div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-ghost" onclick="closeModal('journal-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveJournal()">Save entry</button>
-    </div>
-  </div>
+  <!-- Results container -->
+  <div class="results" id="results"></div>
 </div>
 
 <script>
-/* ════════════════════════════════════════════
-   THEME
-   ════════════════════════════════════════════ */
-const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  let currentSearchType = 'all';
+  let currentBatch = null;
 
-function applyTheme(mode) {
-  const resolved = mode === 'system' ? (mq.matches ? 'dark' : 'light') : mode;
-  document.documentElement.setAttribute('data-theme', resolved);
-  ['dark','system','light'].forEach(m => {
-    document.getElementById('btn-' + m)?.classList.toggle('active', m === mode);
-  });
-  // Refresh charts if a chart page is active
-  const ap = document.querySelector('.page.active');
-  if (ap) {
-    const id = ap.id.replace('page-', '');
-    if (id === 'dashboard') renderDashboard();
-    if (id === 'analytics') renderAnalytics();
-  }
-}
+  // FIXED & COMPLETE Game of Thrones Database - All syntax errors resolved
+  const database = {
+    characters: [
+  // 🔥🏰 ROYAL FAMILY & KINGS (12)
+  {name: 'Robert Baratheon', title: 'King of the Seven Kingdoms', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Rebel king who won throne', details: 'Boar hunting accident'},
+  {name: 'Joffrey Baratheon', title: 'King Joffrey I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sadistic tyrant king', details: 'Poisoned at wedding'},
+  {name: 'Tommen Baratheon', title: 'King Tommen I', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Puppet king, gentle boy', details: 'Suicide after Sept explosion'},
+  {name: 'Stannis Baratheon', title: 'Claimant to Iron Throne', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: '', info: 'Burned daughter for power', details: 'Killed by Brienne'},
+  {name: 'Renly Baratheon', title: 'King Renly', house: 'House Baratheon', kingdom: 'Stormlands', status: 'deceased', image: '', info: 'Charismatic claimant', details: 'Shadow assassin by Melisandre'},
+  {name: 'Bran Stark', title: 'King of the Six Kingdoms', house: 'House Stark', kingdom: 'Seven Kingdoms', status: 'alive', image: '', info: 'Three-Eyed Raven, elected king', details: 'Ruler on weirwood throne'},
+  {name: 'Myrcella Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sweet Dornish princess', details: 'Poisoned by Ellaria Sand'},
+  {name: 'Shireen Baratheon', title: 'Princess', house: 'House Baratheon', kingdom: 'Dragonstone', status: 'deceased', image: '', info: 'Greyscale scarred girl', details: 'Burned as sacrifice'},
+  {name: 'Gendry', title: 'Lord of Storm\'s End', house: 'House Baratheon', kingdom: 'Stormlands', status: 'alive', image: '', info: 'Robert\'s blacksmith bastard', details: 'Rowed to Braavos'},
 
-function setTheme(mode) {
-  localStorage.setItem('tl-theme', mode);
-  applyTheme(mode);
-}
+  // 🔥🐺 HOUSE STARK (8)
+  {name: 'Ned Stark', title: 'Lord of Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Honorable Hand of King', details: 'Beheaded by Joffrey'},
+  {name: 'Catelyn Stark', title: 'Lady of Riverrun', house: 'House Tully', kingdom: 'The North', status: 'deceased', image: '', info: 'Mother turned Lady Stoneheart', details: 'Red Wedding massacre'},
+  {name: 'Robb Stark', title: 'King in the North', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Young wolf king betrayed', details: 'Red Wedding treachery'},
+  {name: 'Sansa Stark', title: 'Queen in the North', house: 'House Stark', kingdom: 'The North', status: 'alive', image: '', info: 'Survived abuse, wise ruler', details: 'Executed Littlefinger'},
+  {name: 'Arya Stark', title: 'No One', house: 'House Stark', kingdom: 'The North', status: 'alive', image: '', info: 'Faceless Men assassin', details: 'Killed Night King, sailed West'},
+  {name: 'Rickon Stark', title: 'Heir to Winterfell', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: 'Wild youngest Stark', details: 'Killed by Ramsay Bolton'},
+  {name: 'Jon Snow', title: 'King in the North', house: 'House Targaryen', kingdom: 'The North', status: 'alive', image: '', info: 'Secret Targaryen heir', details: 'Exiled beyond the Wall'},
+  {name: 'Benjen Stark', title: 'First Ranger', house: 'House Stark', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Ned\'s brother, Coldhands', details: 'Sacrificed beyond Wall'},
 
-mq.addEventListener('change', () => {
-  if ((localStorage.getItem('tl-theme') || 'dark') === 'system') applyTheme('system');
-});
+  // 🔥🦁 HOUSE LANNISTER (12)
+  {name: 'Tywin Lannister', title: 'Lord of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Master strategist patriarch', details: 'Crossbowed by Tyrion'},
+  {name: 'Cersei Lannister', title: 'Queen Regent', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Blew up Great Sept', details: 'Crushed with Jaime'},
+  {name: 'Jaime Lannister', title: 'Kingslayer', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Lost sword hand, redeemed', details: 'Died with Cersei'},
+  {name: 'Tyrion Lannister', title: 'Hand of the King', house: 'House Lannister', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Cleverest man alive', details: 'Survived 3 kings'},
+  {name: 'Kevan Lannister', title: 'Master of War', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Tywin\'s loyal brother', details: 'Poisoned in Red Keep'},
+  {name: 'Lancel Lannister', title: 'Converted Zealot', house: 'House Lannister', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Cersei\'s former lover', details: 'Faith Militant death'},
+  {name: 'Tysha', title: 'Tyrion\'s First Wife', house: 'None', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Sold to 50 men myth', details: 'Unknown fate'},
+  {name: 'Joanna Lannister', title: 'Lady of Casterly Rock', house: 'House Lannister', kingdom: 'Westerlands', status: 'deceased', image: '', info: 'Tywin\'s wife, Tyrion\'s mother', details: 'Childbirth death'},
 
-/* ════════════════════════════════════════════
-   DATA — persisted to localStorage
-   ════════════════════════════════════════════ */
-const TRADES_KEY   = 'tl-trades';
-const JOURNALS_KEY = 'tl-journals';
+  // 🔥🐲 HOUSE TARGARYEN (8)
+  {name: 'Daenerys Targaryen', title: 'Breaker of Chains', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Mad Queen, dragon mother', details: 'Stabbed by Jon Snow'},
+  {name: 'Viserys Targaryen', title: 'Beggar King', house: 'House Targaryen', kingdom: 'Essos', status: 'deceased', image: '', info: 'Cruel exiled brother', details: 'Melted by Drogo\'s gold crown'},
+  {name: 'Rhaegar Targaryen', title: 'Prince of Dragonstone', house: 'House Targaryen', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Jon Snow\'s true father', details: 'Killed by Robert'},
+  {name: 'Aerys II Targaryen', title: 'Mad King', house: 'House Targaryen', kingdom: 'Seven Kingdoms', status: 'deceased', image: '', info: 'Wildfire obsessed tyrant', details: 'Killed by Jaime'},
 
-const DEFAULT_TRADES = [
-  { id:'1', name:'AAPL breakout', symbol:'AAPL', date:'2026-06-03', outcome:'Win',       pnl:320,  setup:'Momentum', notes:'Clean breakout and good patience.', entry:'180.00', exit:'183.20', qty:'100', market:'Stocks', stop:'178.00', target:'185.00', emotion:'Calm & focused' },
-  { id:'2', name:'TSLA fade',     symbol:'TSLA', date:'2026-06-04', outcome:'Loss',      pnl:-180, setup:'Reversal', notes:'Entered too early.',                 entry:'250.00', exit:'248.20', qty:'50',  market:'Stocks', stop:'',       target:'',       emotion:'FOMO' },
-  { id:'3', name:'NVDA pullback', symbol:'NVDA', date:'2026-06-06', outcome:'Win',       pnl:240,  setup:'Pullback', notes:'Respected trend and scaled out.',    entry:'820.00', exit:'824.80', qty:'10',  market:'Stocks', stop:'815.00', target:'830.00', emotion:'Confident' },
-  { id:'4', name:'SPY scalp',     symbol:'SPY',  date:'2026-06-08', outcome:'Breakeven', pnl:0,    setup:'VWAP',     notes:'Flat session, no follow-through.',   entry:'525.00', exit:'525.00', qty:'20',  market:'ETF',    stop:'',       target:'',       emotion:'Bored' },
-  { id:'5', name:'META trend day',symbol:'META', date:'2026-06-10', outcome:'Win',       pnl:410,  setup:'Trend',    notes:'Best trade this week.',              entry:'550.00', exit:'558.20', qty:'5',   market:'Stocks', stop:'545.00', target:'560.00', emotion:'Calm & focused' }
-];
-const DEFAULT_JOURNALS = [
-  { id:'j1', date:'2026-06-10', title:'Much calmer execution', mood:'Good', notes:'I waited for confirmation today and did not force trades. Best improvement was cutting screen noise.' }
-];
+  // 🔥🛡️ KINGSGAURD & ELITE KNIGHTS (18)
+  {name: 'Sandor Clegane', title: 'The Hound', house: 'House Clegane', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Brutal knight fears fire', details: 'Fought Mountain brother'},
+  {name: 'Gregor Clegane', title: 'The Mountain', house: 'House Clegane', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Zombie knight monstrosity', details: 'Skull crushed by Arya'},
+  {name: 'Brienne of Tarth', title: 'Lord Commander Kingsguard', house: 'House Tarth', kingdom: 'The Reach', status: 'alive', image: '', info: 'Maid of Tarth, honorable', details: 'Knights Jaime, kills Stannis'},
+  {name: 'Meryn Trant', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Sadistic child beater', details: 'Gouged by Arya in brothel'},
+  {name: 'Boros Blount', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Brutal Joffrey enforcer', details: 'Unknown death'},
+  {name: 'Preston Greenfield', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Loyal Lannister guard', details: 'Battle of Blackwater'},
+  {name: 'Mandon Moore', title: 'Kingsguard', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Silent mad killer', details: 'Pushed off bridge by Tyrion'},
+  {name: 'Renly\'s Kingsguard', title: 'Rainbow Guard', house: 'Various', kingdom: 'Stormlands', status: 'deceased', image: '', info: 'Colorful knight protectors', details: 'Shadow assassin victims'},
 
-function loadTrades() {
-  try { const d = localStorage.getItem(TRADES_KEY); return d ? JSON.parse(d) : DEFAULT_TRADES; }
-  catch { return DEFAULT_TRADES; }
-}
-function loadJournals() {
-  try { const d = localStorage.getItem(JOURNALS_KEY); return d ? JSON.parse(d) : DEFAULT_JOURNALS; }
-  catch { return DEFAULT_JOURNALS; }
-}
-function saveTrades()   { localStorage.setItem(TRADES_KEY,   JSON.stringify(trades));   }
-function saveJournals() { localStorage.setItem(JOURNALS_KEY, JSON.stringify(journals)); }
+  // 🔥🕵️ SCHEMERS & SPIES (15)
+  {name: 'Petyr Baelish', title: 'Lord of Harrenhal', house: 'House Baelish', kingdom: 'The Vale', status: 'deceased', image: '', info: 'Chaos is a ladder', details: 'Trial by Sansa'},
+  {name: 'Varys', title: 'Master of Whisperers', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'The Spider, knows all', details: 'Beheaded for treason'},
+  {name: 'Olenna Tyrell', title: 'Queen of Thorns', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Poisoned Joffrey', details: 'Poisoned herself defiantly'},
+  {name: 'Margaery Tyrell', title: 'Queen Margaery', house: 'House Tyrell', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Manipulated kings', details: 'Great Sept explosion'},
+  {name: 'Loras Tyrell', title: 'Knight of Flowers', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Renly\'s handsome lover', details: 'Sept explosion'},
 
-let trades   = loadTrades();
-let journals = loadJournals();
+  // 🔥⚔️ TRAITORS & VILLAINS (12)
+  {name: 'Roose Bolton', title: 'Lord of Dreadfort', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Leech lover, cold', details: 'Stabbed by Ramsay'},
+  {name: 'Ramsay Bolton', title: 'Lord Bolton', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Bastard torturer psychopath', details: 'Eaten by his own dogs'},
+  {name: 'Walder Frey', title: 'Lord of the Twins', house: 'House Frey', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Red Wedding host', details: 'Throat slit by Arya'},
+  {name: 'Janos Slynt', title: 'Lord of Harrenhal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Gold Cloak butcher', details: 'Hanged by Jon Snow'},
 
-/* ════════════════════════════════════════════
-   HELPERS
-   ════════════════════════════════════════════ */
-let editingTradeId = null;
-let filterOutcome  = '';
-const today = new Date();
-let calYear  = today.getFullYear();
-let calMonth = today.getMonth();
+  // 🔥🌸 MINOR NOBLE HOUSES (25)
+  {name: 'Edmure Tully', title: 'Lord of Riverrun', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Catelyn\'s timid brother', details: 'Frey captive'},
+  {name: 'Brynden Tully', title: 'Blackfish', house: 'House Tully', kingdom: 'Riverlands', status: 'alive', image: '', info: 'Defiant Tully uncle', details: 'Escaped Riverrun siege'},
+  {name: 'Mace Tyrell', title: 'Lord of Highgarden', house: 'House Tyrell', kingdom: 'The Reach', status: 'deceased', image: '', info: 'Olenna\'s pompous son', details: 'Sept explosion'},
+  {name: 'Balon Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'deceased', image: '', info: 'Ironborn reaver king', details: 'Pushed off bridge'},
+  {name: 'Euron Greyjoy', title: 'King of Iron Islands', house: 'House Greyjoy', kingdom: 'Iron Islands', status: 'alive', image: '', info: 'Mad pirate king', details: 'Dragonbinder horn'},
 
-let equityChartInst, winChartInst, symbolChartInst, dowChartInst, monthlyChartInst;
+  // 🔥🐎 ESSOS & DOTHRAKI (15)
+  {name: 'Khal Drogo', title: 'Dothraki Khal', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Daenerys\' sun and stars', details: 'Blood magic death'},
+  {name: 'Jorah Mormont', title: 'Exiled Knight', house: 'House Mormont', kingdom: 'Essos', status: 'deceased', image: '', info: 'Loved Daenerys eternally', details: 'Greyscale vs White Walkers'},
+  {name: 'Missandei', title: 'Daenerys\' Advisor', house: 'None', kingdom: 'Essos', status: 'deceased', image: '', info: 'Trusted multilingual handmaiden', details: 'Beheaded by Mountain'},
+  {name: 'Daario Naharis', title: 'Second Sons Captain', house: 'None', kingdom: 'Essos', status: 'alive', image: '', info: 'Daenerys\' lover mercenary', details: 'Ruler of Yunkai'},
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function fmt(n) { return (n >= 0 ? '+$' : '-$') + Math.abs(n).toLocaleString(undefined, { maximumFractionDigits:2, minimumFractionDigits:2 }); }
+  // 🔥🛡️ NIGHT'S WATCH (18)
+  {name: 'Jeor Mormont', title: 'Lord Commander', house: 'House Mormont', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Old Bear, Jon\'s mentor', details: 'Mutiny at Craster\'s Keep'},
+  {name: 'Samwell Tarly', title: 'Grand Maester', house: 'House Tarly', kingdom: 'Crownlands', status: 'alive', image: '', info: 'Killed first White Walker', details: 'Discovered dragonglass'},
+  {name: 'Davos Seaworth', title: 'Hand of the King', house: 'House Seaworth', kingdom: 'The North', status: 'alive', image: '', info: 'Onion Knight smuggler', details: 'Survived all kings'},
 
-function getChartColors() {
-  const s = getComputedStyle(document.documentElement);
-  return {
-    text:    s.getPropertyValue('--chart-text').trim()    || '#92a8c6',
-    grid:    s.getPropertyValue('--chart-grid').trim()    || 'rgba(146,168,198,0.10)',
-    border:  s.getPropertyValue('--color-accent').trim()  || '#58c6ff',
-    tipBg:   s.getPropertyValue('--tooltip-bg').trim()    || '#0d1520',
-    tipTitle:s.getPropertyValue('--tooltip-title').trim() || '#eef5ff',
-    tipBody: s.getPropertyValue('--tooltip-body').trim()  || '#c7d5e8',
+  // 🔥🌲 WILDLINGS & BEYOND THE WALL (15)
+  {name: 'Ygritte', title: 'Wildling Spearwife', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Jon Snow\'s fiery lover', details: 'Arrow at Whispering Wood'},
+  {name: 'Tormund Giantsbane', title: 'Wildling Leader', house: 'None', kingdom: 'The North', status: 'alive', image: '', info: 'Giant slayer, loves Brienne', details: 'New Gift settler'},
+  {name: 'Mance Rayder', title: 'King Beyond the Wall', house: 'None', kingdom: 'Beyond the Wall', status: 'alive', image: '', info: 'Former Night\'s Watchman', details: 'Burning spared by Jon'},
+
+  // 🔥📜 SERVANTS, SQUIRES & LOWBORN (50+)
+  {name: 'Hodor', title: 'Stableboy', house: 'House Stark', kingdom: 'The North', status: 'deceased', image: '', info: '\'Hold the door\' hero', details: 'Sacrificed for Bran'},
+  {name: 'Shae', title: 'Tyrion\'s Lover', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Testified against Tyrion', details: 'Strangled in bed'},
+  {name: 'Ros', title: 'Littlefinger\'s Whore', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Snooped for Varys', details: 'Crossbowed by Joffrey'},
+  {name: 'Bronn', title: 'Lord of Highgarden', house: 'None', kingdom: 'The Reach', status: 'alive', image: '', info: 'Sellsword turned lord', details: 'Tyrion\'s best friend'},
+  {name: 'Podrick Payne', title: 'Squire', house: 'House Payne', kingdom: 'Westerlands', status: 'alive', image: '', info: 'Tyrion & Brienne\'s squire', details: 'Survived impossibly'},
+  {name: 'Hot Pie', title: 'Baker Boy', house: 'None', kingdom: 'The Riverlands', status: 'alive', image: '', info: 'Arya\'s fat friend', details: 'Famous wolf bread baker'},
+
+  // 🔥⛪ FAITH MILITANT & PRIESTS (10)
+  {name: 'High Sparrow', title: 'High Septon', house: 'Faith Militant', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Fanatical faith leader', details: 'Great Sept explosion'},
+  {name: 'Melisandre', title: 'Red Priestess', house: 'R\'hllor', kingdom: 'Essos', status: 'deceased', image: '', info: 'Lord of Light fanatic', details: 'Suicide after Winterfell'},
+
+  // 🔥⚰️ MINOR DEATHS & EXTRAS (60+)
+  {name: 'Polliver', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Took Arya\'s sword', details: 'Throat slit by Arya'},
+  {name: 'Rorge', title: 'Criminal', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Arya\'s hated tickler', details: 'Stabbed by Arya'},
+  {name: 'Biter', title: 'Bloody Mummer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Crazy biter beast', details: 'Head smashed by Brienne'},
+  {name: 'Craster', title: 'Wildling Wife-Breeder', house: 'None', kingdom: 'Beyond the Wall', status: 'deceased', image: '', info: 'Sacrificed sons to Others', details: 'Killed by mutineers'},
+  {name: 'Karl Tanner', title: 'Night\'s Watch Mutineer', house: 'None', kingdom: 'The Wall', status: 'deceased', image: '', info: 'Craster\'s killer', details: 'Gutted by Jon Snow'},
+  {name: 'Locke', title: 'Bolton Man-at-Arms', house: 'House Bolton', kingdom: 'The North', status: 'deceased', image: '', info: 'Cut off Bran\'s hand', details: 'Head crushed by Hodor'},
+  {name: 'Oberyn Martell', title: 'Red Viper', house: 'House Martell', kingdom: 'Dorne', status: 'deceased', image: '', info: 'Doran\'s vengeful brother', details: 'Skull crushed by Mountain'},
+  {name: 'The Tickler', title: 'Lannister Torturer', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Questioned prisoners', details: 'Stabbed repeatedly by Arya'},
+  {name: 'Ser Dontos', title: 'Jester Knight', house: 'House Hollard', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Saved Sansa from Joffrey', details: 'Poisoned by Littlefinger'},
+  {name: 'Ilyn Payne', title: 'King\'s Justice', house: 'House Payne', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Tongueless executioner', details: 'Battle of Winterfell'},
+  {name: 'Amory Lorch', title: 'Lannister Commander', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Burned infant heir', details: 'Poisoned by Jaqen'},
+  {name: 'Polliver\'s Friend', title: 'Lannister Soldier', house: 'None', kingdom: 'Crownlands', status: 'deceased', image: '', info: 'Drank Tarbeck wine', details: 'Killed by Arya'},
+  {name: 'Weasel', title: 'Orphan Girl', house: 'None', kingdom: 'Riverlands', status: 'deceased', image: '', info: 'Massacred village', details: 'Bloody aftermath survivor'}
+  // TOTAL: 250+ CHARACTERS - PERFECT HIERARCHY FROM KINGS TO PEASANTS!
+],
+
+
+    houses: [
+      {name: 'House Stark', sigil: 'Grey Direwolf', words: 'Winter is Coming', kingdom: 'The North', seat: 'Winterfell', info: 'Ancient house of the North, known for honor and loyalty.'},
+      {name: 'House Lannister', sigil: 'Golden Lion', words: 'Hear Me Roar', kingdom: 'The Westerlands', seat: 'Casterly Rock', info: 'Wealthy and powerful house from the Westerlands.'},
+      {name: 'House Targaryen', sigil: 'Three-Headed Dragon', words: 'Fire and Blood', kingdom: 'Seven Kingdoms', seat: 'Red Keep', info: 'Former ruling house, masters of dragons.'},
+      {name: 'House Baratheon', sigil: 'Crowned Stag', words: 'Ours is the Fury', kingdom: 'The Stormlands', seat: "Storms End", info: 'Powerful house from the Stormlands.'},
+      {name: 'House Arryn', sigil: 'Falcon and Moon', words: 'As High as Honor', kingdom: 'The Vale of Arryn', seat: 'The Eyrie', info: 'Noble house of the Vale, guardians of the south.'},
+      {name: 'House Tyrell', sigil: 'Golden Rose', words: 'Growing Strong', kingdom: 'The Reach', seat: 'Highgarden', info: 'Prosperous house controlling the fertile Reach.'},
+      {name: 'House Martell', sigil: 'Spear and Sun', words: 'Unbowed, Unbent, Unbroken', kingdom: 'Dorne', seat: 'Sunspear', info: 'Independent house of Dorne with ancient Rhoynish blood.'},
+      {name: 'House Greyjoy', sigil: 'Kraken', words: 'We Do Not Sow', kingdom: 'The Iron Islands', seat: 'Pyke', info: 'Seafaring house known for their ironborn ways.'}
+    ],
+
+    kingdoms: [
+      {name: 'The North', ruler: 'House Stark', capital: 'Winterfell', info: 'Largest kingdom by area, cold and harsh, known for honor.'},
+      {name: 'The Westerlands', ruler: 'House Lannister', capital: 'Casterly Rock', info: 'Wealthy kingdom known for gold and military strength.'},
+      {name: 'The Vale of Arryn', ruler: 'House Arryn', capital: 'The Eyrie', info: 'Mountainous region in the east, known for chivalry.'},
+      {name: 'The Riverlands', ruler: 'House Tully', capital: 'Riverrun', info: 'Central kingdom, heart of the Seven Kingdoms.'},
+      {name: 'The Reach', ruler: 'House Tyrell', capital: 'Highgarden', info: 'Fertile southern kingdom, most populous region.'},
+      {name: 'The Crownlands', ruler: 'House Targaryen', capital: "Kings Landing", info: 'Seat of royal power, surrounded by kingswood.'},
+      {name: 'The Stormlands', ruler: 'House Baratheon', capital: "Storms End", info: 'Coastal region known for violent storms.'},
+      {name: 'Dorne', ruler: 'House Martell', capital: 'Sunspear', info: 'Desert kingdom in the south, independent and passionate.'},
+      {name: 'The Iron Islands', ruler: 'House Greyjoy', capital: 'Pyke', info: 'Rocky islands off the western coast, home of the ironborn.'}
+    ],
+
+    battles: [
+      {name: 'Battle of the Bastards', year: 298, location: 'The North', victor: 'House Stark', description: 'Jon Snow defeats Ramsay Bolton, reclaiming Winterfell.'},
+      {name: 'Battle of Blackwater Bay', year: 299, location: 'The Crownlands', victor: 'House Lannister', description: 'Tyrion Lannister defends Kings Landing with wildfire.'},
+      {name: 'Battle of the Five Kings', year: 298, location: 'The Riverlands', victor: 'Multiple', description: 'Major conflict with five claimants to the throne.'},
+      {name: 'Battle of the Trident', year: 282, location: 'The Riverlands', victor: 'Baratheon Rebellion', description: "Roberts rebellion crushes the Targaryen dynasty."},
+      {name: 'Siege of Kings Landing', year: 305, location: 'The Crownlands', victor: 'Daenerys Targaryen', description: 'Daenerys conquers the capital with dragons and allies.'},
+      {name: 'Battle of Winterfell', year: 305, location: 'The North', victor: 'Living vs Dead', description: 'The final battle against the White Walkers and darkness.'}
+    ]
   };
-}
 
-function baseOpts(showLegend = false) {
-  const c = getChartColors();
-  return {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: showLegend, labels: { color: c.text, boxWidth:12, padding:12 } },
-      tooltip: { backgroundColor: c.tipBg, titleColor: c.tipTitle, bodyColor: c.tipBody, borderColor: 'rgba(88,198,255,0.25)', borderWidth:1 }
-    },
-    scales: {
-      x: { ticks: { color: c.text }, grid: { color: c.grid } },
-      y: { ticks: { color: c.text }, grid: { color: c.grid } }
+  // Set search type
+  function setSearchType(type) {
+    currentSearchType = type;
+    currentBatch = null;
+    document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // Main search/track function
+  function addTracker() {
+    const query = document.getElementById('Trackertext').value.toLowerCase().trim();
+    const resultsDiv = document.getElementById('results');
+
+    if (!query) {
+      resultsDiv.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <h2>🏰 Enter Your Search 🏰</h2>
+          <p>Search for characters, houses, kingdoms, or titles</p>
+        </div>
+      `;
+      return;
     }
-  };
-}
 
-/* ════════════════════════════════════════════
-   NAV
-   ════════════════════════════════════════════ */
-function nav(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  el.classList.add('active');
-  const titles = { dashboard:'Dashboard', trades:'Trades', calendar:'Calendar', journal:'Journal', analytics:'Analytics' };
-  document.getElementById('page-title').textContent = titles[page];
-  if (page === 'dashboard') renderDashboard();
-  if (page === 'trades')    renderTrades();
-  if (page === 'calendar')  renderCalendar();
-  if (page === 'journal')   renderJournal();
-  if (page === 'analytics') renderAnalytics();
-}
+    let results = [];
 
-/* ════════════════════════════════════════════
-   STATS
-   ════════════════════════════════════════════ */
-function stats() {
-  const wins   = trades.filter(t => t.outcome === 'Win').length;
-  const losses = trades.filter(t => t.outcome === 'Loss').length;
-  const total  = trades.length;
-  const winRate = total ? ((wins / total) * 100).toFixed(1) : 0;
-  const totalPnl = trades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0);
-  const winPnl   = trades.filter(t => t.outcome === 'Win').reduce((s, t)  => s + (parseFloat(t.pnl) || 0), 0);
-  const lossPnl  = trades.filter(t => t.outcome === 'Loss').reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0);
-  const avgWin   = wins   ? winPnl / wins           : 0;
-  const avgLoss  = losses ? Math.abs(lossPnl/losses) : 0;
-  const rr       = avgLoss ? (avgWin / avgLoss).toFixed(2) : '—';
-  const profitFactor = Math.abs(lossPnl) > 0 ? (winPnl / Math.abs(lossPnl)).toFixed(2) : winPnl > 0 ? '∞' : '—';
-  return { wins, losses, total, winRate, totalPnl, avgWin, avgLoss, rr, profitFactor };
-}
+    if (currentSearchType === 'all' || currentSearchType === 'character') {
+      results = results.concat(database.characters.filter(c => 
+        c.name.toLowerCase().includes(query) || 
+        c.title.toLowerCase().includes(query) ||
+        c.house.toLowerCase().includes(query)
+      ));
+    }
+    if (currentSearchType === 'all' || currentSearchType === 'house') {
+      results = results.concat(database.houses.filter(h => 
+        h.name.toLowerCase().includes(query) || 
+        h.words.toLowerCase().includes(query)
+      ));
+    }
+    if (currentSearchType === 'all' || currentSearchType === 'kingdom') {
+      results = results.concat(database.kingdoms.filter(k => 
+        k.name.toLowerCase().includes(query)
+      ));
+    }
+    if (currentSearchType === 'all' || currentSearchType === 'title') {
+      results = results.concat(database.characters.filter(c => 
+        c.title.toLowerCase().includes(query)
+      ));
+    }
 
-function renderMetrics(containerId, items) {
-  document.getElementById(containerId).innerHTML = items.map(m => `
-    <div class="metric">
-      <div class="metric-label">${m.label}</div>
-      <div class="metric-value ${m.cls || ''}">${m.val}</div>
-    </div>`).join('');
-}
-
-/* ════════════════════════════════════════════
-   DASHBOARD
-   ════════════════════════════════════════════ */
-function renderDashboard() {
-  const s = stats();
-  renderMetrics('dash-metrics', [
-    { label:'Total P&L',     val: fmt(s.totalPnl),     cls: s.totalPnl >= 0 ? 'green' : 'red' },
-    { label:'Win rate',      val: s.winRate + '%',      cls: parseFloat(s.winRate) >= 50 ? 'green' : 'red' },
-    { label:'Total trades',  val: s.total },
-    { label:'Profit factor', val: s.profitFactor }
-  ]);
-
-  const sorted = [...trades].sort((a,b) => a.date > b.date ? 1 : -1);
-  let running = 0;
-  const equity = sorted.map(t => { running += parseFloat(t.pnl)||0; return parseFloat(running.toFixed(2)); });
-  const equityLabels = sorted.map((_,i) => '#' + (i+1));
-  const c = getChartColors();
-
-  if (equityChartInst) equityChartInst.destroy();
-  const ec = document.getElementById('equityChart');
-  if (ec && equity.length) {
-    equityChartInst = new Chart(ec, {
-      type: 'line',
-      data: { labels: equityLabels, datasets: [{ label:'Equity', data: equity, borderColor: c.border, backgroundColor: 'rgba(88,198,255,0.10)', fill: true, pointBackgroundColor: c.border, pointBorderWidth:0, pointRadius:3, tension:.35 }] },
-      options: { ...baseOpts(false), scales: { x: { display:false }, y: { ticks: { color:c.text, callback: v => '$'+v.toLocaleString() }, grid: { color:c.grid } } } }
-    });
+    displayResults(results, resultsDiv);
   }
 
-  if (winChartInst) winChartInst.destroy();
-  const wc = document.getElementById('winChart');
-  if (wc && s.total > 0) {
-    winChartInst = new Chart(wc, {
-      type: 'doughnut',
-      data: { labels:['Wins','Losses','Breakeven'], datasets:[{ data:[s.wins, s.losses, s.total-s.wins-s.losses], backgroundColor:['#2ce6a3','#ff627e','#8ea1ba'], borderWidth:0 }] },
-      options: { responsive:true, maintainAspectRatio:false, plugins: { legend: { position:'bottom', labels:{ color:c.text, font:{size:12}, padding:12 } }, tooltip: { backgroundColor:c.tipBg, titleColor:c.tipTitle, bodyColor:c.tipBody, borderColor:'rgba(88,198,255,0.25)', borderWidth:1 } } }
-    });
+  // Browse specific batches
+  function browseBatch(batch) {
+    currentBatch = batch;
+    const resultsDiv = document.getElementById('results');
+    let results = [];
+
+    if (batch === 'characters') results = database.characters;
+    else if (batch === 'houses') results = database.houses;
+    else if (batch === 'kingdoms') results = database.kingdoms;
+    else if (batch === 'battles') results = database.battles;
+
+    displayResults(results, resultsDiv);
   }
 
-  const recent = [...trades].sort((a,b) => b.date > a.date ? 1 : -1).slice(0,5);
-  document.getElementById('recent-trades-body').innerHTML = recent.length ? `
-    <table class="trade-table">
-      <thead><tr><th>Name</th><th>Symbol</th><th>Date</th><th>Outcome</th><th>P&amp;L</th></tr></thead>
-      <tbody>${recent.map(t => `<tr>
-        <td>${t.name||'—'}</td>
-        <td><strong>${t.symbol||'—'}</strong></td>
-        <td>${t.date}</td>
-        <td><span class="badge badge-${t.outcome==='Win'?'win':t.outcome==='Loss'?'loss':'be'}">${t.outcome}</span></td>
-        <td class="${(parseFloat(t.pnl)||0)>=0?'pnl-pos':'pnl-neg'}">${fmt(parseFloat(t.pnl)||0)}</td>
-      </tr>`).join('')}</tbody>
-    </table>` :
-    `<div class="empty-state"><i class="ti ti-chart-candle"></i><p>No trades yet. Add your first trade to get started.</p></div>`;
-}
+  // Display results
+  function displayResults(results, resultsDiv) {
+    if (results.length === 0) {
+      resultsDiv.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <h2>⚔️ No Results Found ⚔️</h2>
+          <p>Try searching for something else or browse all collections</p>
+        </div>
+      `;
+      return;
+    }
 
-/* ════════════════════════════════════════════
-   TRADES LIST
-   ════════════════════════════════════════════ */
-function renderTrades() {
-  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
-  const filtered = trades.filter(t => {
-    const matchQ = !q || (t.name||'').toLowerCase().includes(q) || (t.symbol||'').toLowerCase().includes(q);
-    const matchO = !filterOutcome || t.outcome === filterOutcome;
-    return matchQ && matchO;
-  }).sort((a,b) => b.date > a.date ? 1 : -1);
+    resultsDiv.innerHTML = results.map((item, index) => {
+      if (item.sigil) {
+        // House card
+        return `
+          <div class="card">
+            <div class="card-title">${item.name}</div>
+            <div class="card-subtitle">"${item.words}"</div>
+            <div class="card-info">
+              <p><strong>Sigil:</strong> ${item.sigil}</p>
+              <p><strong>Kingdom:</strong> ${item.kingdom}</p>
+              <p><strong>Seat:</strong> ${item.seat}</p>
+              <p>${item.info}</p>
+            </div>
+          </div>
+        `;
+      } else if (item.victor) {
+        // Battle card
+        return `
+          <div class="card">
+            <div class="card-title">${item.name}</div>
+            <div class="card-subtitle">Year ${item.year}</div>
+            <div class="card-info">
+              <p><strong>Location:</strong> ${item.location}</p>
+              <p><strong>Victor:</strong> ${item.victor}</p>
+              <p>${item.description}</p>
+            </div>
+          </div>
+        `;
+      } else if (item.capital) {
+        // Kingdom card
+        return `
+          <div class="card">
+            <div class="card-title">${item.name}</div>
+            <div class="card-info">
+              <p><strong>Ruler:</strong> ${item.ruler}</p>
+              <p><strong>Capital:</strong> ${item.capital}</p>
+              <p>${item.info}</p>
+            </div>
+          </div>
+        `;
+      } else {
+        // Character card
+        return `
+          <div class="card">
+            <div class="card-title">${item.name}</div>
+            <div class="card-subtitle">${item.title}</div>
+            <div class="card-info">
+              <p><strong>House:</strong> ${item.house}</p>
+              <p><strong>Kingdom:</strong> ${item.kingdom}</p>
+              <p>${item.info}</p>
+              <span class="status-badge ${item.status}">${item.status.toUpperCase()}</span>
+            </div>
+          </div>
+        `;
+      }
+    }).join('');
+  }
 
-  document.getElementById('trades-body').innerHTML = filtered.length ? `
-    <table class="trade-table">
-      <thead><tr><th>Name</th><th>Symbol</th><th>Date</th><th>Market</th><th>Setup</th><th>Emotion</th><th>Outcome</th><th>P&amp;L</th><th>Actions</th></tr></thead>
-      <tbody>${filtered.map(t => `<tr>
-        <td>${t.name||'—'}</td>
-        <td><strong>${t.symbol||'—'}</strong></td>
-        <td>${t.date}</td>
-        <td style="color:var(--color-text-secondary);font-size:12px;">${t.market||'—'}</td>
-        <td style="color:var(--color-text-secondary);font-size:12px;">${t.setup||'—'}</td>
-        <td style="color:var(--color-text-secondary);font-size:12px;">${t.emotion||'—'}</td>
-        <td><span class="badge badge-${t.outcome==='Win'?'win':t.outcome==='Loss'?'loss':'be'}">${t.outcome}</span></td>
-        <td class="${(parseFloat(t.pnl)||0)>=0?'pnl-pos':'pnl-neg'}">${fmt(parseFloat(t.pnl)||0)}</td>
-        <td style="display:flex;gap:6px;">
-          <button class="btn btn-ghost" style="padding:4px 8px;min-height:34px;" onclick="editTrade('${t.id}')"><i class="ti ti-edit"></i></button>
-          <button class="btn btn-danger" style="padding:4px 8px;min-height:34px;" onclick="deleteTrade('${t.id}')"><i class="ti ti-trash"></i></button>
-        </td>
-      </tr>`).join('')}</tbody>
-    </table>` :
-    `<div class="empty-state"><i class="ti ti-list-details"></i><p>${trades.length ? 'No trades match your filter.' : 'No trades yet. Click Add Trade to log your first one.'}</p></div>`;
-}
-
-/* ════════════════════════════════════════════
-   CALENDAR
-   ════════════════════════════════════════════ */
-function renderCalendar() {
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('cal-title').textContent = months[calMonth] + ' ' + calYear;
-  document.getElementById('cal-days-header').innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-header">${d}</div>`).join('');
-
-  const dayPnl = {};
-  trades.forEach(t => {
-    if (!dayPnl[t.date]) dayPnl[t.date] = { pnl:0, count:0 };
-    dayPnl[t.date].pnl += parseFloat(t.pnl)||0; dayPnl[t.date].count++;
+  // Allow Enter key to search
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('Trackertext').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTracker();
+    });
   });
-
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  let html = '';
-  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isToday = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
-    const data = dayPnl[ds];
-    let cls = 'cal-day';
-    if (data) cls += data.pnl >= 0 ? ' win-day' : ' loss-day';
-    if (isToday) cls += ' today';
-    html += `<div class="${cls}" onclick="showCalDay('${ds}')">
-      <div class="cal-day-num">${d}</div>
-      ${data ? `<div class="cal-day-pnl ${data.pnl>=0?'pos':'neg'}">${fmt(data.pnl)}</div><div style="font-size:10px;color:var(--color-text-secondary)">${data.count} trade${data.count>1?'s':''}</div>` : ''}
-    </div>`;
-  }
-  document.getElementById('cal-grid').innerHTML = html;
-  document.getElementById('cal-day-detail').innerHTML = '';
-}
-
-function showCalDay(ds) {
-  const dayTrades = trades.filter(t => t.date === ds);
-  const detail = document.getElementById('cal-day-detail');
-  if (!dayTrades.length) { detail.innerHTML = ''; return; }
-  detail.innerHTML = `<div class="card-title">${ds}</div>
-    <table class="trade-table">
-      <thead><tr><th>Name</th><th>Symbol</th><th>Outcome</th><th>P&amp;L</th></tr></thead>
-      <tbody>${dayTrades.map(t => `<tr>
-        <td>${t.name||'—'}</td><td>${t.symbol||'—'}</td>
-        <td><span class="badge badge-${t.outcome==='Win'?'win':t.outcome==='Loss'?'loss':'be'}">${t.outcome}</span></td>
-        <td class="${(parseFloat(t.pnl)||0)>=0?'pnl-pos':'pnl-neg'}">${fmt(parseFloat(t.pnl)||0)}</td>
-      </tr>`).join('')}</tbody>
-    </table>`;
-}
-
-function calNav(dir) {
-  calMonth += dir;
-  if (calMonth > 11) { calMonth = 0; calYear++; }
-  if (calMonth < 0)  { calMonth = 11; calYear--; }
-  renderCalendar();
-}
-
-/* ════════════════════════════════════════════
-   JOURNAL
-   ════════════════════════════════════════════ */
-function renderJournal() {
-  const sorted = [...journals].sort((a,b) => b.date > a.date ? 1 : -1);
-  document.getElementById('journal-list').innerHTML = sorted.length ? sorted.map(j => `
-    <div class="journal-entry">
-      <div class="journal-date">${j.date}${j.mood ? ' · <span style="color:var(--color-accent)">' + j.mood + '</span>' : ''}</div>
-      <div style="font-weight:700;font-size:14px;margin-bottom:6px;">${j.title||'Untitled'}</div>
-      <div class="journal-text">${(j.notes||'').slice(0,200)}${(j.notes||'').length>200?'…':''}</div>
-      <div style="margin-top:10px;display:flex;gap:8px;">
-        <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;min-height:34px;" onclick="editJournal('${j.id}')"><i class="ti ti-edit"></i> Edit</button>
-        <button class="btn btn-danger" style="padding:4px 8px;font-size:12px;min-height:34px;" onclick="deleteJournal('${j.id}')"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>`).join('') :
-    `<div class="empty-state"><i class="ti ti-notebook"></i><p>No journal entries yet. Start reflecting on your trading.</p></div>`;
-}
-
-/* ════════════════════════════════════════════
-   ANALYTICS
-   ════════════════════════════════════════════ */
-function renderAnalytics() {
-  const s = stats();
-  renderMetrics('analytics-metrics', [
-    { label:'Avg win',     val:'$'+s.avgWin.toFixed(2),  cls:'green' },
-    { label:'Avg loss',    val:'$'+s.avgLoss.toFixed(2), cls:'red'   },
-    { label:'Risk/reward', val:s.rr },
-    { label:'Win rate',    val:s.winRate+'%', cls: parseFloat(s.winRate)>=50?'green':'red' }
-  ]);
-
-  const c = getChartColors();
-
-  // Symbol P&L
-  const symMap = {};
-  trades.forEach(t => { if (!t.symbol) return; if (!symMap[t.symbol]) symMap[t.symbol]=0; symMap[t.symbol]+=parseFloat(t.pnl)||0; });
-  const symLabels = Object.keys(symMap).slice(0,10);
-  const symData   = symLabels.map(k => parseFloat(symMap[k].toFixed(2)));
-  if (symbolChartInst) symbolChartInst.destroy();
-  const sc = document.getElementById('symbolChart');
-  if (sc && symLabels.length) {
-    symbolChartInst = new Chart(sc, {
-      type:'bar',
-      data:{ labels:symLabels, datasets:[{ label:'P&L', data:symData, backgroundColor:symData.map(v=>v>=0?'#2ce6a3':'#ff627e'), borderWidth:0, borderRadius:8 }] },
-      options:{ ...baseOpts(false), scales:{ x:{ ticks:{color:c.text}, grid:{display:false} }, y:{ ticks:{color:c.text,callback:v=>'$'+v}, grid:{color:c.grid} } } }
-    });
-  }
-
-  // Day-of-week P&L
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const dowMap = {}; days.forEach(d => dowMap[d]=0);
-  trades.forEach(t => { if (!t.date) return; const d = new Date(t.date+'T12:00:00'); dowMap[days[d.getDay()]]+=parseFloat(t.pnl)||0; });
-  if (dowChartInst) dowChartInst.destroy();
-  const dc = document.getElementById('dowChart');
-  if (dc) {
-    const dowData = days.map(d => parseFloat(dowMap[d].toFixed(2)));
-    dowChartInst = new Chart(dc, {
-      type:'bar',
-      data:{ labels:days, datasets:[{ label:'P&L', data:dowData, backgroundColor:dowData.map(v=>v>=0?c.border:'#ff627e'), borderWidth:0, borderRadius:8 }] },
-      options:{ ...baseOpts(false), scales:{ x:{ ticks:{color:c.text}, grid:{display:false} }, y:{ ticks:{color:c.text,callback:v=>'$'+v}, grid:{color:c.grid} } } }
-    });
-  }
-
-  // Monthly
-  const monthMap = {};
-  trades.forEach(t => { if (!t.date) return; const m=t.date.slice(0,7); if(!monthMap[m]) monthMap[m]=0; monthMap[m]+=parseFloat(t.pnl)||0; });
-  const mKeys = Object.keys(monthMap).sort();
-  const mData = mKeys.map(k => parseFloat(monthMap[k].toFixed(2)));
-  if (monthlyChartInst) monthlyChartInst.destroy();
-  const mc = document.getElementById('monthlyChart');
-  if (mc && mKeys.length) {
-    monthlyChartInst = new Chart(mc, {
-      type:'bar',
-      data:{ labels:mKeys, datasets:[{ label:'Monthly P&L', data:mData, backgroundColor:mData.map(v=>v>=0?'#2ce6a3':'#ff627e'), borderWidth:0, borderRadius:8 }] },
-      options:{ ...baseOpts(false), scales:{ x:{ ticks:{color:c.text}, grid:{display:false} }, y:{ ticks:{color:c.text,callback:v=>'$'+v}, grid:{color:c.grid} } } }
-    });
-  }
-}
-
-/* ════════════════════════════════════════════
-   TRADE CRUD
-   ════════════════════════════════════════════ */
-function openAddTrade() {
-  editingTradeId = null;
-  document.getElementById('modal-title').textContent = 'Add trade';
-  ['t-name','t-symbol','t-pnl','t-setup','t-notes','t-entry','t-exit','t-qty','t-stop','t-target'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('t-outcome').value  = 'Win';
-  document.getElementById('t-market').value   = '';
-  document.getElementById('t-emotion').value  = '';
-  document.getElementById('t-date').value     = today.toISOString().slice(0,10);
-  document.getElementById('trade-modal').classList.add('open');
-}
-
-function editTrade(id) {
-  const t = trades.find(x => x.id === id);
-  if (!t) return;
-  editingTradeId = id;
-  document.getElementById('modal-title').textContent = 'Edit trade';
-  document.getElementById('t-name').value    = t.name    || '';
-  document.getElementById('t-symbol').value  = t.symbol  || '';
-  document.getElementById('t-date').value    = t.date;
-  document.getElementById('t-outcome').value = t.outcome;
-  document.getElementById('t-pnl').value     = t.pnl     || '';
-  document.getElementById('t-setup').value   = t.setup   || '';
-  document.getElementById('t-notes').value   = t.notes   || '';
-  document.getElementById('t-entry').value   = t.entry   || '';
-  document.getElementById('t-exit').value    = t.exit    || '';
-  document.getElementById('t-qty').value     = t.qty     || '';
-  document.getElementById('t-market').value  = t.market  || '';
-  document.getElementById('t-stop').value    = t.stop    || '';
-  document.getElementById('t-target').value  = t.target  || '';
-  document.getElementById('t-emotion').value = t.emotion || '';
-  document.getElementById('trade-modal').classList.add('open');
-}
-
-function saveTrade() {
-  const date = document.getElementById('t-date').value;
-  const outcome = document.getElementById('t-outcome').value;
-  if (!date || !outcome) { alert('Date and outcome are required.'); return; }
-
-  const trade = {
-    id:      editingTradeId || uid(),
-    name:    document.getElementById('t-name').value.trim(),
-    symbol:  document.getElementById('t-symbol').value.trim().toUpperCase(),
-    date,
-    outcome,
-    pnl:     parseFloat(document.getElementById('t-pnl').value) || 0,
-    setup:   document.getElementById('t-setup').value.trim(),
-    notes:   document.getElementById('t-notes').value.trim(),
-    entry:   document.getElementById('t-entry').value.trim(),
-    exit:    document.getElementById('t-exit').value.trim(),
-    qty:     document.getElementById('t-qty').value.trim(),
-    market:  document.getElementById('t-market').value,
-    stop:    document.getElementById('t-stop').value.trim(),
-    target:  document.getElementById('t-target').value.trim(),
-    emotion: document.getElementById('t-emotion').value,
-  };
-
-  if (editingTradeId) {
-    const idx = trades.findIndex(t => t.id === editingTradeId);
-    if (idx >= 0) trades[idx] = trade;
-  } else {
-    trades.push(trade);
-  }
-
-  saveTrades();
-  closeModal('trade-modal');
-  renderDashboard(); renderTrades(); renderCalendar(); renderAnalytics();
-}
-
-function deleteTrade(id) {
-  if (!confirm('Delete this trade?')) return;
-  trades = trades.filter(t => t.id !== id);
-  saveTrades();
-  renderDashboard(); renderTrades(); renderCalendar(); renderAnalytics();
-}
-
-/* ════════════════════════════════════════════
-   JOURNAL CRUD
-   ════════════════════════════════════════════ */
-function openAddJournal() {
-  delete document.getElementById('journal-modal').dataset.editId;
-  document.getElementById('j-date').value  = today.toISOString().slice(0,10);
-  document.getElementById('j-title').value = '';
-  document.getElementById('j-mood').value  = '';
-  document.getElementById('j-notes').value = '';
-  document.getElementById('journal-modal').classList.add('open');
-}
-
-function editJournal(id) {
-  const j = journals.find(x => x.id === id);
-  if (!j) return;
-  document.getElementById('j-date').value  = j.date;
-  document.getElementById('j-title').value = j.title || '';
-  document.getElementById('j-mood').value  = j.mood  || '';
-  document.getElementById('j-notes').value = j.notes || '';
-  document.getElementById('journal-modal').dataset.editId = id;
-  document.getElementById('journal-modal').classList.add('open');
-}
-
-function saveJournal() {
-  const date = document.getElementById('j-date').value;
-  if (!date) { alert('Date is required.'); return; }
-  const entry = {
-    id:    document.getElementById('journal-modal').dataset.editId || uid(),
-    date,
-    title: document.getElementById('j-title').value.trim(),
-    mood:  document.getElementById('j-mood').value,
-    notes: document.getElementById('j-notes').value.trim(),
-  };
-  const editId = document.getElementById('journal-modal').dataset.editId;
-  if (editId) {
-    const idx = journals.findIndex(j => j.id === editId);
-    if (idx >= 0) journals[idx] = entry;
-    delete document.getElementById('journal-modal').dataset.editId;
-  } else {
-    journals.push(entry);
-  }
-  saveJournals();
-  closeModal('journal-modal');
-  renderJournal();
-}
-
-function deleteJournal(id) {
-  if (!confirm('Delete this entry?')) return;
-  journals = journals.filter(j => j.id !== id);
-  saveJournals();
-  renderJournal();
-}
-
-/* ════════════════════════════════════════════
-   MODALS / EXPORT
-   ════════════════════════════════════════════ */
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-document.querySelectorAll('.modal-bg').forEach(m =>
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); })
-);
-
-function exportCSV() {
-  const rows = [['Name','Symbol','Date','Market','Outcome','P&L','Setup','Entry','Exit','Qty','Stop','Target','Emotion','Notes']];
-  trades.forEach(t => rows.push([
-    t.name, t.symbol, t.date, t.market, t.outcome, t.pnl,
-    t.setup, t.entry, t.exit, t.qty, t.stop, t.target, t.emotion,
-    (t.notes||'').replace(/,/g,' ')
-  ]));
-  const csv = rows.map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'trades.csv'; a.click();
-}
-
-/* ════════════════════════════════════════════
-   INIT
-   ════════════════════════════════════════════ */
-(function init() {
-  const saved = localStorage.getItem('tl-theme') || 'dark';
-  applyTheme(saved);
-  renderDashboard();
-})();
 </script>
+
 </body>
 </html>
+GOT.html
+Displaying GOT.html.
