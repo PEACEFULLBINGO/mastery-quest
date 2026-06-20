@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head> 
@@ -233,6 +231,60 @@
       background: rgba(255, 215, 0, 0.3);
       transform: translateY(-3px);
       box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Ask the Maester (AI) section */
+    .maester-section {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      animation: fadeInUp 0.8s ease-out 0.65s both;
+    }
+
+    .maester-label {
+      text-align: center;
+      color: #ffd700;
+      letter-spacing: 2px;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      opacity: 0.85;
+    }
+
+    .maester-input-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .maester-input-row input {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .maester-answer {
+      margin-top: 20px;
+      padding: 25px;
+      background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(40, 50, 80, 0.95));
+      border: 2px solid #ffd700;
+      border-radius: 12px;
+      line-height: 1.7;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .maester-answer-label {
+      color: #ffd700;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .maester-answer-text {
+      white-space: pre-wrap;
     }
 
     /* Results container */
@@ -531,7 +583,7 @@
     }
   </style>
 </head>
-<body style="background-image: url('https://picsum.photos/1920/1080?random=1');">
+<body style="background: linear-gradient(135deg, #0c0a14 0%, #1a1024 45%, #2a1408 100%); background-size: cover;">
 
 <!-- Animated particles -->
 <div class="particle" style="top: 10%; left: 10%; animation-delay: 0s;">🐉</div>
@@ -568,6 +620,18 @@
     <button class="browse-btn" onclick="browseBatch('houses')">🛡️ All Houses</button>
     <button class="browse-btn" onclick="browseBatch('kingdoms')">🏰 All Kingdoms</button>
     <button class="browse-btn" onclick="browseBatch('battles')">⚔️ Major Battles</button>
+    <button class="browse-btn" onclick="addCustomBackground()">🖼️ Add Background</button>
+    <button class="browse-btn" onclick="resetBackgrounds()">↩️ Reset Backgrounds</button>
+  </div>
+
+  <!-- Ask the Maester: AI-powered Q&A about the series -->
+  <div class="maester-section">
+    <p class="maester-label">🧙 Ask the Maester — AI-powered lore search</p>
+    <div class="maester-input-row">
+      <input type="text" id="maesterQuestion" placeholder="Ask anything about Game of Thrones... e.g. Why did the Mad King want to burn Kings Landing?" onkeypress="if(event.key==='Enter') askMaester()">
+      <button onclick="askMaester()">🔮 Ask</button>
+    </div>
+    <div id="maesterAnswer" class="maester-answer" style="display:none;"></div>
   </div>
 
   <!-- Results container -->
@@ -586,6 +650,7 @@
 <script>
   let currentSearchType = 'all';
   let wikiUrls = JSON.parse(localStorage.getItem('wikiUrls')) || {};
+  let customImageUrls = JSON.parse(localStorage.getItem('customImageUrls')) || {};
 
  
  // Game of Thrones Database
@@ -736,20 +801,176 @@
     ]
   };
 
+  // ===== Heraldic avatar generator (original art, used as a fallback whenever
+  // a character/house/kingdom/battle entry has no photo on file) =====
+  const houseTheme = {
+    'House Stark': {colors: ['#3a4452', '#cfd9e3'], sigil: '🐺'},
+    'House Lannister': {colors: ['#7a5a10', '#dc143c'], sigil: '🦁'},
+    'House Targaryen': {colors: ['#1a1a2e', '#dc143c'], sigil: '🐉'},
+    'House Baratheon': {colors: ['#2c2c2c', '#ffd700'], sigil: '🦌'},
+    'House Arryn': {colors: ['#3a6ea5', '#e8f4f8'], sigil: '🦅'},
+    'House Tyrell': {colors: ['#2d5016', '#ffd700'], sigil: '🌹'},
+    'House Martell': {colors: ['#a85b00', '#ffd700'], sigil: '☀️'},
+    'House Greyjoy': {colors: ['#1a1a1a', '#b8860b'], sigil: '🐙'},
+    'House Tully': {colors: ['#1e3a5f', '#dc143c'], sigil: '🐟'},
+    'House Bolton': {colors: ['#5c1414', '#2c2c2c'], sigil: '🩸'},
+    'House Frey': {colors: ['#3a4452', '#1e3a5f'], sigil: '🗼'},
+    'House Clegane': {colors: ['#3a3a3a', '#ffd700'], sigil: '🐕'},
+    'House Tarth': {colors: ['#3a6ea5', '#e8a3ad'], sigil: '🌅'},
+    'House Mormont': {colors: ['#2d5016', '#e8f4f8'], sigil: '🐻'},
+    'House Seaworth': {colors: ['#274057', '#e8f4f8'], sigil: '⚓'},
+    'House Tarly': {colors: ['#4a5a1a', '#ffd700'], sigil: '🌾'},
+    'House Baelish': {colors: ['#2c2c2c', '#9a9a9a'], sigil: '🦢'},
+    'House Payne': {colors: ['#4a4a4a', '#9a9a9a'], sigil: '🛡️'},
+    'House Hollard': {colors: ['#4a4a4a', '#9a9a9a'], sigil: '🃏'},
+    'Faith Militant': {colors: ['#5a4a30', '#e8d4b8'], sigil: '⭐'},
+    "R'hllor": {colors: ['#7a1010', '#ff8c00'], sigil: '🔥'},
+    'default': {colors: ['#2a1f14', '#ffd700'], sigil: '⚔️'}
+  };
+
+  function getHouseTheme(key) {
+    return houseTheme[key] || houseTheme['default'];
+  }
+
+  function svgToDataUri(svg) {
+    return 'data:image/svg+xml,' + encodeURIComponent(svg);
+  }
+
+  function generateAvatar(item) {
+    const houseKey = item.house || item.ruler || item.name;
+    const theme = getHouseTheme(houseKey);
+    const initials = item.name.replace(/['']/g, '').split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+    const ringColor = item.status === 'alive' ? '#22b14c' : item.status === 'deceased' ? '#dc143c' : '#ffd700';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+      <defs>
+        <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+          <stop offset="0%" stop-color="${theme.colors[0]}" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="${theme.colors[0]}" stop-opacity="1"/>
+        </radialGradient>
+        <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="${theme.colors[1]}"/>
+          <stop offset="100%" stop-color="${ringColor}"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" fill="${theme.colors[0]}"/>
+      <circle cx="100" cy="100" r="90" fill="url(#bg)"/>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="url(#ring)" stroke-width="5"/>
+      <circle cx="100" cy="100" r="78" fill="none" stroke="${theme.colors[1]}" stroke-width="1" opacity="0.5"/>
+      <text x="100" y="92" font-size="58" text-anchor="middle" dominant-baseline="middle">${theme.sigil}</text>
+      <text x="100" y="150" font-size="32" font-family="Georgia, serif" font-weight="bold" fill="${theme.colors[1]}" text-anchor="middle">${initials}</text>
+    </svg>`;
+    return svgToDataUri(svg);
+  }
+
+  function getImageSrc(item) {
+    return customImageUrls[item.name] || item.image || generateAvatar(item);
+  }
+
   // Background changer
+  const dragonsFlightBg = svgToDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+    <defs>
+      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#160b1f"/>
+        <stop offset="40%" stop-color="#5e1b2e"/>
+        <stop offset="72%" stop-color="#c9622c"/>
+        <stop offset="100%" stop-color="#1f0f08"/>
+      </linearGradient>
+    </defs>
+    <rect width="1920" height="1080" fill="url(#sky1)"/>
+    <circle cx="1480" cy="280" r="110" fill="#ffd28a" opacity="0.8"/>
+    <g fill="#ffe9b0" opacity="0.6">
+      <circle cx="180" cy="120" r="2"/><circle cx="360" cy="80" r="1.6"/><circle cx="560" cy="160" r="1.6"/>
+      <circle cx="760" cy="90" r="2"/><circle cx="960" cy="60" r="1.6"/><circle cx="1700" cy="180" r="2"/>
+      <circle cx="1820" cy="100" r="1.6"/><circle cx="120" cy="260" r="1.4"/>
+    </g>
+    <polygon points="0,860 220,640 420,820 660,580 900,840 1180,660 1450,820 1920,680 1920,1080 0,1080" fill="#170a08" opacity="0.92"/>
+    <g fill="#0c0504">
+      <rect x="140" y="760" width="55" height="180"/>
+      <polygon points="140,760 167,712 195,760"/>
+      <rect x="230" y="700" width="80" height="240"/>
+      <polygon points="230,700 270,648 310,700"/>
+      <rect x="335" y="790" width="46" height="150"/>
+      <polygon points="335,790 358,754 381,790"/>
+    </g>
+    <g fill="#0a0403" opacity="0.95">
+      <ellipse cx="1180" cy="470" rx="95" ry="34" transform="rotate(-18 1180 470)"/>
+      <ellipse cx="1090" cy="430" rx="40" ry="16" transform="rotate(-30 1090 430)"/>
+      <polygon points="1230,440 1340,360 1280,470 1230,460"/>
+      <polygon points="1120,400 1010,330 1080,440 1120,420"/>
+      <polygon points="1260,480 1340,560 1280,500"/>
+      <polygon points="1075,455 1010,470 1050,495"/>
+    </g>
+  </svg>`);
+
+  const ironThroneBg = svgToDataUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+    <defs>
+      <radialGradient id="hall" cx="50%" cy="30%" r="80%">
+        <stop offset="0%" stop-color="#2a2018"/>
+        <stop offset="55%" stop-color="#13100c"/>
+        <stop offset="100%" stop-color="#050403"/>
+      </radialGradient>
+      <radialGradient id="flame1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffcf7a"/>
+        <stop offset="60%" stop-color="#ff7a1a" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#ff7a1a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="1920" height="1080" fill="url(#hall)"/>
+    <g opacity="0.35">
+      <rect x="120" y="0" width="6" height="1080" fill="#000"/>
+      <rect x="420" y="0" width="6" height="1080" fill="#000"/>
+      <rect x="1500" y="0" width="6" height="1080" fill="#000"/>
+      <rect x="1800" y="0" width="6" height="1080" fill="#000"/>
+    </g>
+    <circle cx="280" cy="480" r="90" fill="url(#flame1)"/>
+    <circle cx="1640" cy="480" r="90" fill="url(#flame1)"/>
+    <rect x="270" y="540" width="20" height="120" fill="#1a1108"/>
+    <rect x="1630" y="540" width="20" height="120" fill="#1a1108"/>
+    <g fill="#0c0a08">
+      <rect x="860" y="560" width="200" height="320" rx="6"/>
+      <g>
+        <polygon points="870,560 880,500 895,560"/>
+        <polygon points="895,560 905,480 918,560"/>
+        <polygon points="918,560 930,510 944,560"/>
+        <polygon points="944,560 956,470 968,560"/>
+        <polygon points="968,560 980,500 994,560"/>
+        <polygon points="994,560 1006,480 1018,560"/>
+        <polygon points="1018,560 1030,510 1044,560"/>
+        <polygon points="1044,560 1052,490 1062,560"/>
+      </g>
+      <rect x="830" y="700" width="40" height="180"/>
+      <rect x="1050" y="700" width="40" height="180"/>
+    </g>
+    <g fill="#ffd28a" opacity="0.12">
+      <polygon points="960,0 700,1080 1220,1080"/>
+    </g>
+  </svg>`);
+
   const images = [
     'https://static.wikia.nocookie.net/gameofthrones/images/c/ca/Iron_Throne_Official_Guide.jpg/revision/latest/scale-to-width-down/1000?cb=20220906170837',
     'https://static.wikia.nocookie.net/gameofthrones/images/1/1a/Ned%27s_execution.jpg/revision/latest/scale-to-width-down/1000?cb=20160730054118', 
+<<<<<<< HEAD
+    'https://imgs.search.brave.com/hl8N59D70tvzzPqGqvMMJGPI-UAfllfz505Pcq-S9y0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci8yNjUv/Nzg1L0hELXdhbGxw/YXBlci1nYW1lLW9m/LXRocm9uZXMtZGFl/bmVyeXMtdGFyZ2Fy/eWVuLWZhbnRhc3kt/Z2lybC1kcmFnb24t/Y3JlYXR1cmUtYmxv/bmRlLXRodW1ibmFp/bC5qcGc',
+    dragonsFlightBg,
+    ironThroneBg
+=======
     'https://www.pinterest.com/pin/470133648593083281    'https://picsum.photos/1920/1080?randohttps://imgs.search.brave.com/o0VkS4Rk1MFqp9MF0oQQwHg7guNHkJX0MwpOn2S-Lo4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/aG9sbHl3b29kcmVw/b3J0ZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDE2LzA3/L0dhbWVfb2ZfVGhy/b25lc19TMDZfSWNv/bmljX0ltYWdlc18x/OC5qcGc_dz0xNTAwm=4',
     'https://picsum.phohttps://imgs.search.brave.com/I38lyT4mXgCuTwPm4qCWvVPkyqK1cmF2aiAgjXIekBc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS52YW5pdHlmYWly/LmNvbS9waG90b3Mv/NTc5Y2U0YmU4MmI5/MjZjYTFlNTkzN2Zm/LzQ6My93XzEyMDAs/Y19saW1pdC8wYzUz/YjNmMC1lYTlmLTAx/MzItYWFkOC0wYWNk/OGRmZWEzOWQuanBntos/1920/1080?random=5'
+>>>>>>> 6467b9eccb0781d682591451a21572b9a3ef2b8d
   ];
+  let customBgUrls = JSON.parse(localStorage.getItem('customBgUrls')) || [];
+  let allBackgrounds = [...images, ...customBgUrls];
   let currentIndex = 0;
   let timeLeft = 5;
 
   function changeBackground() {
-    document.body.style.backgroundImage = `url(${images[currentIndex]})`;
-    currentIndex = (currentIndex + 1) % images.length;
+    document.body.style.backgroundImage = `url(${allBackgrounds[currentIndex]})`;
+    currentIndex = (currentIndex + 1) % allBackgrounds.length;
   }
+
+  // Show a Game-of-Thrones-themed background immediately instead of waiting
+  // for the first timer tick, so visitors never see an unrelated placeholder.
+  changeBackground();
 
   function updateTimer() {
     timeLeft--;
@@ -760,6 +981,89 @@
   }
 
   setInterval(updateTimer, 1000);
+
+  // Let the person paste in their own image to use in the background rotation
+  // (e.g. a real screencap they found themselves). Saved in the browser.
+  function addCustomBackground() {
+    const url = prompt('Paste an image URL to add to the background rotation:');
+    if (url && url.trim()) {
+      customBgUrls.push(url.trim());
+      localStorage.setItem('customBgUrls', JSON.stringify(customBgUrls));
+      allBackgrounds = [...images, ...customBgUrls];
+      document.body.style.backgroundImage = `url(${url.trim()})`;
+      currentIndex = allBackgrounds.indexOf(url.trim());
+      currentIndex = (currentIndex + 1) % allBackgrounds.length;
+      timeLeft = 5;
+    }
+  }
+
+  function resetBackgrounds() {
+    customBgUrls = [];
+    localStorage.removeItem('customBgUrls');
+    allBackgrounds = [...images];
+    currentIndex = 0;
+    timeLeft = 5;
+    changeBackground();
+    alert('Custom backgrounds cleared — back to the defaults.');
+  }
+
+  // Ask the Maester: AI-powered Q&A about the series, using the Claude API
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  async function askMaester() {
+    const input = document.getElementById('maesterQuestion');
+    const question = input.value.trim();
+    if (!question) return;
+
+    const answerBox = document.getElementById('maesterAnswer');
+    answerBox.style.display = 'block';
+    answerBox.innerHTML = `
+      <div class="spinner" style="width:30px; height:30px; margin:0 auto 15px;"></div>
+      <p style="text-align:center; color:#ffd700;">🐦 The raven flies to the Citadel...</p>
+    `;
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [
+            {
+              role: "user",
+              content: `You are a wise Maester of the Citadel, deeply learned in the lore of Game of Thrones / A Song of Ice and Fire — houses, characters, battles, history, and fan theories. Answer the following question in a warm, scholarly tone, in 3-6 sentences. If the question has nothing to do with Game of Thrones, gently say so and invite a question about the series instead.\n\nQuestion: ${question}`
+            }
+          ],
+          tools: [{ type: "web_search_20250305", name: "web_search" }]
+        })
+      });
+
+      if (!response.ok) throw new Error('Request failed: ' + response.status);
+
+      const data = await response.json();
+      const text = (data.content || [])
+        .map(block => block.type === 'text' ? block.text : '')
+        .filter(Boolean)
+        .join('\n')
+        .trim();
+
+      answerBox.innerHTML = `
+        <div class="maester-answer-label">🧙 The Maester answers</div>
+        <div class="maester-answer-text">${escapeHtml(text) || 'The ravens were lost in a storm. Try asking again.'}</div>
+      `;
+    } catch (err) {
+      console.error('Maester error:', err);
+      answerBox.innerHTML = `
+        <div class="maester-answer-label" style="color:#dc143c;">⚠️ The raven didn't make it</div>
+        <div class="maester-answer-text">Something went wrong reaching the Citadel. Please try again.</div>
+      `;
+    }
+  }
 
   // Search functions
   function setSearchType(type, btn) {
@@ -814,9 +1118,10 @@
 
     resultsDiv.innerHTML = items.map((item, index) => {
       const statusClass = item.status ? item.status : '';
+      const imgSrc = getImageSrc(item);
       return `
         <div class="card" style="animation-delay: ${0.1 * index}s" onclick="openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
-          ${item.image ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:15px; border:2px solid #ffd700;">` : ''}
+          <img src="${imgSrc}" alt="${item.name}" onerror="this.onerror=null;this.src='${generateAvatar(item)}'" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:15px; border:2px solid #ffd700;">
           <div class="card-title">${item.name}</div>
           <div class="card-subtitle">${item.title || item.sigil || item.ruler}</div>
           <div class="card-info">
@@ -836,8 +1141,9 @@
     const modalBody = document.getElementById('modalBody');
     
     modalName.textContent = item.name;
+    const modalImgSrc = getImageSrc(item);
     modalBody.innerHTML = `
-      ${item.image ? `<img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'" style="width:100%; height:250px; object-fit:cover; border-radius:12px; margin-bottom:20px; border:2px solid #ffd700;">` : ''}
+      <img src="${modalImgSrc}" alt="${item.name}" onerror="this.onerror=null;this.src='${generateAvatar(item)}'" style="width:100%; height:250px; object-fit:cover; border-radius:12px; margin-bottom:20px; border:2px solid #ffd700;">
       
       <div class="detail-row">
         <span class="detail-label">Title:</span>
@@ -873,6 +1179,12 @@
       </div>
       
       <div class="wiki-section">
+        <input type="text" class="wiki-input" id="customImageInput" placeholder="Paste an image URL for ${item.name} (optional)" value="${customImageUrls[item.name] || ''}">
+        <button class="wiki-btn" onclick="saveCustomImage('${item.name}')">🖼️ Use This Image</button>
+        ${customImageUrls[item.name] ? `<button class="wiki-btn" style="margin-top:10px; background:linear-gradient(135deg,#555,#333); color:#e8d4b8;" onclick="clearCustomImage('${item.name}')">↩️ Reset to Default</button>` : ''}
+      </div>
+
+      <div class="wiki-section">
         <input type="text" class="wiki-input" id="wikiUrlInput" placeholder="Enter Wiki URL (optional)" value="${wikiUrls[item.name] || ''}">
         <button class="wiki-btn" onclick="saveWikiUrl('${item.name}')">Save Wiki URL</button>
         ${wikiUrls[item.name] ? `<a href="${wikiUrls[item.name]}" target="_blank" class="wiki-link">🌐 Open Wiki</a>` : ''}
@@ -894,6 +1206,22 @@
       closeModal();
       setTimeout(() => alert('Wiki URL saved!'), 100);
     }
+  }
+
+  function saveCustomImage(name) {
+    const url = document.getElementById('customImageInput').value.trim();
+    if (url) {
+      customImageUrls[name] = url;
+      localStorage.setItem('customImageUrls', JSON.stringify(customImageUrls));
+      closeModal();
+      setTimeout(() => alert('Image saved! It will show up on the card from now on.'), 100);
+    }
+  }
+
+  function clearCustomImage(name) {
+    delete customImageUrls[name];
+    localStorage.setItem('customImageUrls', JSON.stringify(customImageUrls));
+    closeModal();
   }
 
   // Close modal when clicking outside
